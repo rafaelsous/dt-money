@@ -1,7 +1,8 @@
 import { Button, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { PublicStackParamList } from "@/routes";
+
+import { PublicStackParamList } from "@/routes/app.routes";
 
 export function Login() {
   const { navigate } =
