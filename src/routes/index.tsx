@@ -1,22 +1,21 @@
-import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-
+import { useCallback, useState } from "react";
+import { View } from "react-native";
 import { AppRoutes } from "./app.routes";
 import { AuthRoutes } from "./auth.routes";
-import { useCallback, useState } from "react";
 
 export function Routes() {
-  const [user, setUser] = useState(undefined);
+	const [user, setUser] = useState(undefined);
 
-  const CurrentRoutes = useCallback(() => {
-    return user ? <AuthRoutes /> : <AppRoutes />;
-  }, [user]);
+	const CurrentRoutes = useCallback(() => {
+		return user ? <AuthRoutes /> : <AppRoutes />;
+	}, [user]);
 
-  return (
-    <View className="flex-1 bg-white">
-      <NavigationContainer>
-        <CurrentRoutes />
-      </NavigationContainer>
-    </View>
-  );
+	return (
+		<View className="flex-1 bg-white">
+			<NavigationContainer>
+				<CurrentRoutes />
+			</NavigationContainer>
+		</View>
+	);
 }

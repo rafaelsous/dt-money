@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 
 export function Home() {
-  return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold">Home Screen</Text>
-    </View>
-  );
+	return (
+		<View className="flex-1 items-center justify-center bg-white">
+			<Text className="text-xl font-bold">Home Screen</Text>
+		</View>
+	);
 }
