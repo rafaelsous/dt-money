@@ -1,5 +1,6 @@
-import { Text } from "react-native";
 import { useForm } from "react-hook-form";
+
+import { Input } from "../Input";
 
 export type FormLoginParams = {
   email: string;
@@ -12,5 +13,12 @@ export function LoginForm() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<FormLoginParams>();
-  return <Text className="text-white">Login Form component</Text>;
+  return (
+    <Input
+      label="Email"
+      control={control}
+      name="email"
+      placeholder="example@mail.com"
+    />
+  );
 }
