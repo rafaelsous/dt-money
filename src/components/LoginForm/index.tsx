@@ -29,7 +29,7 @@ export function LoginForm() {
         control={control}
         name="password"
         placeholder="Sua senha"
-        leftIconName="mail-lock"
+        leftIconName="lock-outline"
         secureTextEntry
       />
     </View>

@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import {
+  Pressable,
   Text,
   TextInput,
   TextInputProps,
@@ -24,9 +25,11 @@ export function Input<T extends FieldValues>({
   control,
   name,
   leftIconName,
+  secureTextEntry,
   ...rest
 }: InputProps<T>) {
   const [isFocused, setIsFocused] = useState(false);
+  const [showText, setShowText] = useState(secureTextEntry);
   const inputRef = useRef<TextInput>(null);
 
   function onFocus() {
@@ -52,7 +55,7 @@ export function Input<T extends FieldValues>({
             </Text>
           )}
 
-          <TouchableOpacity className="h-16 px-3 py-2 flex-row items-center justify-between gap-2 border-b-[1px] border-gray-600">
+          <Pressable className="h-16 px-3 py-2 flex-row items-center justify-between gap-2 border-b-[1px] border-gray-600">
             {leftIconName && (
               <MaterialIcons
                 name={leftIconName}
@@ -68,10 +71,25 @@ export function Input<T extends FieldValues>({
               onChangeText={onChange}
               onFocus={onFocus}
               onEndEditing={onFocus}
+              secureTextEntry={showText}
               placeholderTextColor={colors.gray[700]}
               {...rest}
             />
-          </TouchableOpacity>
+
+            {secureTextEntry && (
+              <TouchableOpacity
+                hitSlop={16}
+                activeOpacity={0.7}
+                onPress={() => setShowText(!showText)}
+              >
+                <MaterialIcons
+                  name={showText ? "visibility" : "visibility-off"}
+                  size={24}
+                  color={colors.gray[600]}
+                />
+              </TouchableOpacity>
+            )}
+          </Pressable>
         </View>
       )}
     />
