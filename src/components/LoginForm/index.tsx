@@ -1,7 +1,13 @@
+import { View } from "react-native";
 import { useForm } from "react-hook-form";
+import {
+  ArrowRightIcon,
+  EnvelopeIcon,
+  LockSimpleIcon,
+} from "phosphor-react-native";
 
 import { Input } from "../Input";
-import { View } from "react-native";
+import { Button } from "../Button";
 
 export type FormLoginParams = {
   email: string;
@@ -21,7 +27,7 @@ export function LoginForm() {
         control={control}
         name="email"
         placeholder="Digite seu email"
-        leftIconName="mail-outline"
+        leftIcon={EnvelopeIcon}
       />
 
       <Input
@@ -29,9 +35,17 @@ export function LoginForm() {
         control={control}
         name="password"
         placeholder="Sua senha"
-        leftIconName="lock-outline"
+        leftIcon={LockSimpleIcon}
         secureTextEntry
       />
+
+      <Button mode="fill" icon={ArrowRightIcon}>
+        Logar
+      </Button>
+
+      <Button mode="outline" icon={ArrowRightIcon}>
+        Cadastrar
+      </Button>
     </View>
   );
 }

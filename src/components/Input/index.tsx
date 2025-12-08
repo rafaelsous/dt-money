@@ -7,24 +7,25 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useRef, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { IconProps } from "phosphor-react-native";
+import { ComponentType, useRef, useState } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 import { colors } from "@/shared/colors";
+import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 
 type InputProps<T extends FieldValues> = TextInputProps & {
   label?: string;
   control: Control<T>;
   name: Path<T>;
-  leftIconName?: keyof typeof MaterialIcons.glyphMap;
+  leftIcon?: ComponentType<IconProps>;
 };
 
 export function Input<T extends FieldValues>({
   label,
   control,
   name,
-  leftIconName,
+  leftIcon: LeftIcon,
   secureTextEntry,
   ...rest
 }: InputProps<T>) {
@@ -56,9 +57,8 @@ export function Input<T extends FieldValues>({
           )}
 
           <Pressable className="h-16 px-3 py-2 flex-row items-center justify-between gap-2 border-b-[1px] border-gray-600">
-            {leftIconName && (
-              <MaterialIcons
-                name={leftIconName}
+            {LeftIcon && (
+              <LeftIcon
                 size={24}
                 color={isFocused ? colors["accent-brand"] : colors.gray[600]}
               />
