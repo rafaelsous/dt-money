@@ -13,7 +13,7 @@ import { Input } from "../Input";
 import { Button } from "../Button";
 import { schema } from "./schema";
 
-export type RegisterFormParams = {
+export type FormRegisterParams = {
   name: string;
   email: string;
   password: string;
@@ -27,7 +27,7 @@ export function RegisterForm() {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<RegisterFormParams>({
+  } = useForm<FormRegisterParams>({
     defaultValues: {
       name: "",
       email: "",
