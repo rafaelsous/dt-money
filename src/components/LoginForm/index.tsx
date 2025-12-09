@@ -47,6 +47,7 @@ export function LoginForm() {
 
   async function onSubmit(loginData: FormLoginParams) {
     try {
+      console.log("LOGIN...");
       await handleAuthenticate(loginData);
     } catch (error) {
       if (error instanceof AxiosError) {
