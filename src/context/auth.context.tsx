@@ -1,10 +1,15 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
+import {
+  authenticate,
+  UserResponse,
+} from "@/shared/services/dt-money/auth.service";
+
 import { FormLoginParams } from "@/components/LoginForm";
 import { FormRegisterParams } from "@/components/RegisterForm";
 
 type AuthContextType = {
-  user: null;
+  user: UserResponse | null;
   token: string | null;
   handleAuthenticate: (params: FormLoginParams) => Promise<void>;
   handleRegister: (params: FormRegisterParams) => Promise<void>;
@@ -14,10 +19,15 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 function AuthContextProvider({ children }: Readonly<PropsWithChildren>) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState<UserResponse | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
-  async function handleAuthenticate({ email, password }: FormLoginParams) {}
+  async function handleAuthenticate(loginData: FormLoginParams) {
+    const { user, token } = await authenticate(loginData);
+
+    setUser(user);
+    setToken(token);
+  }
 
   async function handleRegister({
     name,

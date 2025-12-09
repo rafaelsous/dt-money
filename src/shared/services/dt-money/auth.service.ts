@@ -2,7 +2,7 @@ import { dtMoneyApi } from "@/api/dt-money";
 
 import { FormLoginParams } from "@/components/LoginForm";
 
-type UserResponse = {
+export type UserResponse = {
   id: number;
   name: string;
   email: string;
