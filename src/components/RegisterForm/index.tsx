@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import {
   ArrowRightIcon,
@@ -6,12 +6,16 @@ import {
   LockSimpleIcon,
   UserIcon,
 } from "phosphor-react-native";
+import { Alert, Text, View } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigation } from "@react-navigation/native";
 
+import { useAuthContext } from "@/context/auth.context";
+
+import { schema } from "./schema";
+
 import { Input } from "../Input";
 import { Button } from "../Button";
-import { schema } from "./schema";
 
 export type FormRegisterParams = {
   name: string;
@@ -22,6 +26,7 @@ export type FormRegisterParams = {
 
 export function RegisterForm() {
   const { goBack } = useNavigation();
+  const { handleRegister } = useAuthContext();
 
   const {
     control,
@@ -37,7 +42,17 @@ export function RegisterForm() {
     resolver: yupResolver(schema),
   });
 
-  async function onSubmit() {}
+  async function onSubmit(registerData: FormRegisterParams) {
+    try {
+      await handleRegister(registerData);
+      goBack();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+        Alert.alert("Erro", "Não foi possível cadastrar o usuário");
+      }
+    }
+  }
 
   return (
     <View className="gap-16">

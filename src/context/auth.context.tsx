@@ -2,6 +2,7 @@ import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 import {
   authenticate,
+  register,
   UserResponse,
 } from "@/shared/services/dt-money/auth.service";
 
@@ -25,13 +26,9 @@ function AuthContextProvider({ children }: Readonly<PropsWithChildren>) {
   async function handleAuthenticate(loginData: FormLoginParams) {
     const { user, token } = await authenticate(loginData);
 
-    console.log({ user, token });
-
     setUser(user);
     setToken(token);
   }
-
-  async function handleRegister(registerData: FormRegisterParams) {}
 
   function handleLogout() {}
 
@@ -48,6 +45,10 @@ function AuthContextProvider({ children }: Readonly<PropsWithChildren>) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+async function handleRegister(registerData: FormRegisterParams) {
+  await register(registerData);
 }
 
 function useAuthContext() {
