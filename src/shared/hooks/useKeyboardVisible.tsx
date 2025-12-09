@@ -25,5 +25,5 @@ export function useKeyboardVisible() {
     };
   }, []);
 
-  return isKeyboardVisible;
+  return { isKeyboardVisible };
 }

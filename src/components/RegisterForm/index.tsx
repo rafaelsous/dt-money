@@ -4,6 +4,7 @@ import {
   ArrowRightIcon,
   EnvelopeIcon,
   LockSimpleIcon,
+  UserIcon,
 } from "phosphor-react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
@@ -14,32 +15,34 @@ import { useKeyboardVisible } from "@/shared/hooks/useKeyboardVisible";
 import { Input } from "../Input";
 import { Button } from "../Button";
 
-export type FormLoginParams = {
+export type RegisterFormParams = {
+  name: string;
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
-export function LoginForm() {
-  const { navigate } = useNavigation<NavigationProp<PublicStackParamList>>();
-  const { isKeyboardVisible } = useKeyboardVisible();
+export function RegisterForm() {
+  const { goBack } = useNavigation();
+  const keyboardVisible = useKeyboardVisible();
 
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<FormLoginParams>();
-
-  const { height } = useWindowDimensions();
-  const keyboardVisibleHeight = Math.floor(height * 0.063);
-  const keyboardHideHeight = Math.floor(height * 0.289);
+  } = useForm<RegisterFormParams>();
 
   return (
-    <View
-      style={{
-        gap: isKeyboardVisible ? keyboardVisibleHeight : keyboardHideHeight,
-      }}
-    >
+    <View className="gap-16">
       <View className="gap-11">
+        <Input
+          label="Nome"
+          control={control}
+          name="name"
+          placeholder="Seu nome completo"
+          leftIcon={UserIcon}
+        />
+
         <Input
           label="Email"
           control={control}
@@ -58,20 +61,23 @@ export function LoginForm() {
           secureTextEntry
         />
 
-        <Button icon={ArrowRightIcon}>Logar</Button>
+        <Input
+          label="Senha"
+          control={control}
+          name="confirmPassword"
+          placeholder="Confirme sua senha"
+          leftIcon={LockSimpleIcon}
+          secureTextEntry
+        />
+
+        <Button icon={ArrowRightIcon}>Cadastrar</Button>
       </View>
 
       <View className="gap-5">
-        <Text className="text-base text-gray-300">
-          Ainda não tem uma conta?
-        </Text>
+        <Text className="text-base text-gray-300">Já tem uma conta?</Text>
 
-        <Button
-          mode="outline"
-          icon={ArrowRightIcon}
-          onPress={() => navigate("register")}
-        >
-          Cadastrar
+        <Button mode="outline" icon={ArrowRightIcon} onPress={goBack}>
+          Acessar
         </Button>
       </View>
     </View>

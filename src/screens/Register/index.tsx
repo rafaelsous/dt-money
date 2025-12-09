@@ -1,14 +1,17 @@
-import { Button, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View } from "react-native";
+
+import { AuthHeader } from "@/components/AuthHeader";
+import { RegisterForm } from "@/components/RegisterForm";
+import { DismissKeyboardView } from "@/components/DismissKeyBoardView";
 
 export function Register() {
-  const { goBack } = useNavigation();
-
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold">Register Screen</Text>
+    <DismissKeyboardView>
+      <View className="flex-1 px-8 pt-4 pb-12">
+        <AuthHeader />
 
-      <Button title="Back" onPress={goBack} />
-    </View>
+        <RegisterForm />
+      </View>
+    </DismissKeyboardView>
   );
 }

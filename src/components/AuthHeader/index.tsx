@@ -5,9 +5,9 @@ import logo from "@/assets/logo.png";
 import { useKeyboardVisible } from "@/shared/hooks/useKeyboardVisible";
 
 export function AuthHeader() {
-  const keyboardVisible = useKeyboardVisible();
+  const { isKeyboardVisible } = useKeyboardVisible();
 
-  if (keyboardVisible) return <></>;
+  if (isKeyboardVisible) return <></>;
 
   return (
     <View className="w-full min-h-40 items-center justify-center">
