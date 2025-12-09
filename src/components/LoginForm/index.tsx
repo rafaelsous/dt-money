@@ -3,9 +3,10 @@ import {
   EnvelopeIcon,
   LockSimpleIcon,
 } from "phosphor-react-native";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Text, useWindowDimensions, View } from "react-native";
+import { Alert, Text, useWindowDimensions, View } from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import { PublicStackParamList } from "@/routes/app.routes";
@@ -26,7 +27,7 @@ export type FormLoginParams = {
 export function LoginForm() {
   const { navigate } = useNavigation<NavigationProp<PublicStackParamList>>();
   const { isKeyboardVisible } = useKeyboardVisible();
-  const { user } = useAuthContext();
+  const { handleAuthenticate } = useAuthContext();
 
   const {
     control,
@@ -44,7 +45,16 @@ export function LoginForm() {
   const keyboardVisibleHeight = Math.floor(height * 0.063);
   const keyboardHideHeight = Math.floor(height * 0.289);
 
-  async function onSubmit() {}
+  async function onSubmit(loginData: FormLoginParams) {
+    try {
+      await handleAuthenticate(loginData);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error.response?.data);
+        Alert.alert("Erro", "Não foi possível realizar login");
+      }
+    }
+  }
 
   return (
     <View

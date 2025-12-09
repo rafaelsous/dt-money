@@ -25,16 +25,13 @@ function AuthContextProvider({ children }: Readonly<PropsWithChildren>) {
   async function handleAuthenticate(loginData: FormLoginParams) {
     const { user, token } = await authenticate(loginData);
 
+    console.log({ user, token });
+
     setUser(user);
     setToken(token);
   }
 
-  async function handleRegister({
-    name,
-    email,
-    password,
-    confirmPassword,
-  }: FormRegisterParams) {}
+  async function handleRegister(registerData: FormRegisterParams) {}
 
   function handleLogout() {}
 
