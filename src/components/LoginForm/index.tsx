@@ -5,11 +5,14 @@ import {
   EnvelopeIcon,
   LockSimpleIcon,
 } from "phosphor-react-native";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import { PublicStackParamList } from "@/routes/app.routes";
 
 import { useKeyboardVisible } from "@/shared/hooks/useKeyboardVisible";
+
+import { schema } from "./schema";
 
 import { Input } from "../Input";
 import { Button } from "../Button";
@@ -27,11 +30,19 @@ export function LoginForm() {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<FormLoginParams>();
+  } = useForm<FormLoginParams>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: yupResolver(schema),
+  });
 
   const { height } = useWindowDimensions();
   const keyboardVisibleHeight = Math.floor(height * 0.063);
   const keyboardHideHeight = Math.floor(height * 0.289);
+
+  async function onSubmit() {}
 
   return (
     <View
@@ -58,7 +69,9 @@ export function LoginForm() {
           secureTextEntry
         />
 
-        <Button icon={ArrowRightIcon}>Logar</Button>
+        <Button icon={ArrowRightIcon} onPress={handleSubmit(onSubmit)}>
+          Logar
+        </Button>
       </View>
 
       <View className="gap-5">

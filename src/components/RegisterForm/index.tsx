@@ -1,19 +1,17 @@
+import { Text, View } from "react-native";
 import { useForm } from "react-hook-form";
-import { Text, useWindowDimensions, View } from "react-native";
 import {
   ArrowRightIcon,
   EnvelopeIcon,
   LockSimpleIcon,
   UserIcon,
 } from "phosphor-react-native";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-
-import { PublicStackParamList } from "@/routes/app.routes";
-
-import { useKeyboardVisible } from "@/shared/hooks/useKeyboardVisible";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigation } from "@react-navigation/native";
 
 import { Input } from "../Input";
 import { Button } from "../Button";
+import { schema } from "./schema";
 
 export type RegisterFormParams = {
   name: string;
@@ -24,13 +22,22 @@ export type RegisterFormParams = {
 
 export function RegisterForm() {
   const { goBack } = useNavigation();
-  const keyboardVisible = useKeyboardVisible();
 
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<RegisterFormParams>();
+  } = useForm<RegisterFormParams>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    resolver: yupResolver(schema),
+  });
+
+  async function onSubmit() {}
 
   return (
     <View className="gap-16">
@@ -70,7 +77,9 @@ export function RegisterForm() {
           secureTextEntry
         />
 
-        <Button icon={ArrowRightIcon}>Cadastrar</Button>
+        <Button icon={ArrowRightIcon} onPress={handleSubmit(onSubmit)}>
+          Cadastrar
+        </Button>
       </View>
 
       <View className="gap-5">
