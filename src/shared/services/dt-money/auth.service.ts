@@ -12,7 +12,7 @@ export type UserResponse = {
   deletedAt: Date | null;
 };
 
-type LoginResponse = {
+export type LoginResponse = {
   user: UserResponse;
   token: string;
 };

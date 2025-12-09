@@ -2,9 +2,11 @@ import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 import {
   authenticate,
+  LoginResponse,
   register,
   UserResponse,
 } from "@/shared/services/dt-money/auth.service";
+import { userStorage } from "@/storage/userStorage";
 
 import { FormLoginParams } from "@/components/LoginForm";
 import { FormRegisterParams } from "@/components/RegisterForm";
@@ -15,6 +17,7 @@ type AuthContextType = {
   handleAuthenticate: (params: FormLoginParams) => Promise<void>;
   handleRegister: (params: FormRegisterParams) => Promise<void>;
   handleLogout: () => void;
+  restoreUserSession: () => Promise<LoginResponse | null>;
 };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -26,11 +29,26 @@ function AuthContextProvider({ children }: Readonly<PropsWithChildren>) {
   async function handleAuthenticate(loginData: FormLoginParams) {
     const { user, token } = await authenticate(loginData);
 
+    await userStorage.add({ user, token });
+
     setUser(user);
     setToken(token);
   }
 
   function handleLogout() {}
+
+  async function restoreUserSession() {
+    const data = await userStorage.get();
+
+    if (data) {
+      const { user, token } = data;
+
+      setUser(user);
+      setToken(token);
+    }
+
+    return data;
+  }
 
   return (
     <AuthContext.Provider
@@ -40,6 +58,7 @@ function AuthContextProvider({ children }: Readonly<PropsWithChildren>) {
         handleAuthenticate,
         handleRegister,
         handleLogout,
+        restoreUserSession,
       }}
     >
       {children}
