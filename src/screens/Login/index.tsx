@@ -7,7 +7,7 @@ import { DismissKeyboardView } from "@/components/DismissKeyBoardView";
 export function Login() {
   return (
     <DismissKeyboardView>
-      <View className="flex-1 w-[82%] self-center">
+      <View className="flex-1 px-8 pt-4 pb-12">
         <AuthHeader />
 
         <LoginForm />

@@ -1,20 +1,30 @@
 import { PropsWithChildren } from "react";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
-  TouchableWithoutFeedback,
-} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAvoidingView, ScrollView } from "react-native";
+
+import { useKeyboardOffset } from "@/shared/hooks/useKeyboardOffset";
 
 export function DismissKeyboardView({ children }: Readonly<PropsWithChildren>) {
+  const keyboardOffset = useKeyboardOffset({
+    openOffset: 0,
+    closedOffset: -60,
+  });
+
   return (
     <SafeAreaView className="flex-1 bg-background-primary">
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView className="flex-1" behavior="padding">
-          <ScrollView>{children}</ScrollView>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior="height"
+        keyboardVerticalOffset={keyboardOffset}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

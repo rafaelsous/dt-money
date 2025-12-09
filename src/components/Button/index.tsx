@@ -7,13 +7,11 @@ import { colors } from "@/shared/colors";
 
 type Props = TouchableOpacityProps &
   PropsWithChildren & {
-    title?: string;
-    mode: "fill" | "outline";
+    mode?: "fill" | "outline";
     icon?: ComponentType<IconProps>;
   };
 
 export function Button({
-  title,
   mode = "fill",
   icon: Icon,
   children,
