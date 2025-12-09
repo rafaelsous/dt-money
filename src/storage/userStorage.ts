@@ -14,4 +14,8 @@ async function get(): Promise<LoginResponse | null> {
   return response ? JSON.parse(response) : null;
 }
 
-export const userStorage = { add, get };
+async function clear() {
+  await AsyncStorage.removeItem(USER_KEY);
+}
+
+export const userStorage = { add, get, clear };
