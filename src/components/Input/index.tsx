@@ -13,6 +13,7 @@ import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 import { colors } from "@/shared/colors";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
+import { ErrorMessage } from "../ErrorMessage";
 
 type InputProps<T extends FieldValues> = TextInputProps & {
   label?: string;
@@ -44,8 +45,6 @@ export function Input<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field: { onChange, value }, fieldState: { error } }) => {
-        console.log(error);
-
         return (
           <View className="w-full">
             {label && (
@@ -93,6 +92,8 @@ export function Input<T extends FieldValues>({
                 </TouchableOpacity>
               )}
             </Pressable>
+
+            {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </View>
         );
       }}
