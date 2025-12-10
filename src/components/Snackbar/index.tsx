@@ -3,9 +3,11 @@ import { CheckCircleIcon, WarningCircleIcon } from "phosphor-react-native";
 
 import { colors } from "@/shared/colors";
 import { useSnackbarContext } from "@/context/snackbar.context";
+import { useKeyboardVisible } from "@/shared/hooks/useKeyboardVisible";
 
 export function Snackbar() {
   const { message, type } = useSnackbarContext();
+  const { isKeyboardVisible } = useKeyboardVisible();
 
   if (!message || !type) {
     return <></>;
@@ -16,7 +18,9 @@ export function Snackbar() {
 
   return (
     <View
-      className={`absolute bottom-10 w-[90%] h-[50px] px-3 flex-row items-center gap-2 self-center ${bgColor} rounded-xl z-10`}
+      className={`w-[90%] h-[50px] px-3 absolute ${
+        isKeyboardVisible ? "top-16" : "bottom-10"
+      } flex-row items-center gap-2 self-center rounded-xl ${bgColor} z-10`}
     >
       {isSuccess ? (
         <CheckCircleIcon size={20} color={colors.white} />

@@ -19,7 +19,7 @@ export function Routes() {
     }
 
     return user && token ? <AuthRoutes /> : <AppRoutes />;
-  }, [user, token]);
+  }, [user, token, isLoading]);
 
   return (
     <View className="flex-1 bg-background-primary">

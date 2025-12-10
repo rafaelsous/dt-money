@@ -3,23 +3,28 @@ import {
   EnvelopeIcon,
   LockSimpleIcon,
 } from "phosphor-react-native";
-import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Alert, Text, useWindowDimensions, View } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import { PublicStackParamList } from "@/routes/app.routes";
 
 import { useAuthContext } from "@/context/auth.context";
+
+import { colors } from "@/shared/colors";
+import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
 import { useKeyboardVisible } from "@/shared/hooks/useKeyboardVisible";
 
 import { schema } from "./schema";
 
 import { Input } from "../Input";
 import { Button } from "../Button";
-import { useSnackbarContext } from "@/context/snackbar.context";
-import { AppError } from "@/helpers/AppError";
 
 export type FormLoginParams = {
   email: string;
@@ -30,7 +35,7 @@ export function LoginForm() {
   const { navigate } = useNavigation<NavigationProp<PublicStackParamList>>();
   const { isKeyboardVisible } = useKeyboardVisible();
   const { handleAuthenticate } = useAuthContext();
-  const { notify } = useSnackbarContext();
+  const { handleError } = useErrorHandler();
 
   const {
     control,
@@ -48,16 +53,13 @@ export function LoginForm() {
   const keyboardVisibleHeight = Math.floor(height * 0.063);
   const keyboardHideHeight = Math.floor(height * 0.289);
 
+  console.log({ isKeyboardVisible, keyboardHideHeight, keyboardVisibleHeight });
+
   async function onSubmit(loginData: FormLoginParams) {
     try {
       await handleAuthenticate(loginData);
     } catch (error) {
-      if (error instanceof AppError) {
-        notify({
-          message: error.message,
-          messageType: "ERROR",
-        });
-      }
+      handleError(error, "Não foi possível fazer login.");
     }
   }
 
@@ -86,8 +88,12 @@ export function LoginForm() {
           secureTextEntry
         />
 
-        <Button icon={ArrowRightIcon} onPress={handleSubmit(onSubmit)}>
-          Logar
+        <Button
+          icon={ArrowRightIcon}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <ActivityIndicator color={colors.white} /> : "Logar"}
         </Button>
       </View>
 
