@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useState } from "react";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 
 type SnackbarMessageType = "ERROR" | "SUCCESS";
 
@@ -44,4 +44,10 @@ function SnackbarContextProvider({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
-export { SnackbarContextProvider };
+function useSnackbarContext() {
+  const context = useContext(SnackbarContext);
+
+  return context;
+}
+
+export { SnackbarContextProvider, useSnackbarContext };

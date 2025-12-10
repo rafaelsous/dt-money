@@ -1,3 +1,4 @@
+import { Snackbar } from "@/components/Snackbar";
 import "./src/styles/global.css";
 
 import { AuthContextProvider } from "@/context/auth.context";
@@ -10,6 +11,8 @@ export default function App() {
     <SnackbarContextProvider>
       <AuthContextProvider>
         <Routes />
+
+        <Snackbar />
       </AuthContextProvider>
     </SnackbarContextProvider>
   );

@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { IconProps } from "phosphor-react-native";
-import { ComponentType, useRef, useState } from "react";
+import React, { ComponentType, useRef, useState } from "react";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 import { colors } from "@/shared/colors";
@@ -21,6 +21,13 @@ type InputProps<T extends FieldValues> = TextInputProps & {
   name: Path<T>;
   leftIcon?: ComponentType<IconProps>;
 };
+
+function getIconLabelColor(hasError: boolean, isFocused: boolean) {
+  if (hasError) return colors["accent-red"];
+  if (isFocused) return colors["accent-brand"];
+
+  return colors.gray[600];
+}
 
 export function Input<T extends FieldValues>({
   label,
@@ -62,7 +69,7 @@ export function Input<T extends FieldValues>({
               {LeftIcon && (
                 <LeftIcon
                   size={24}
-                  color={isFocused ? colors["accent-brand"] : colors.gray[600]}
+                  color={getIconLabelColor(!!error, isFocused)}
                 />
               )}
 

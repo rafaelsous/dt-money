@@ -18,6 +18,8 @@ import { schema } from "./schema";
 
 import { Input } from "../Input";
 import { Button } from "../Button";
+import { useSnackbarContext } from "@/context/snackbar.context";
+import { AppError } from "@/helpers/AppError";
 
 export type FormLoginParams = {
   email: string;
@@ -28,6 +30,7 @@ export function LoginForm() {
   const { navigate } = useNavigation<NavigationProp<PublicStackParamList>>();
   const { isKeyboardVisible } = useKeyboardVisible();
   const { handleAuthenticate } = useAuthContext();
+  const { notify } = useSnackbarContext();
 
   const {
     control,
@@ -49,9 +52,11 @@ export function LoginForm() {
     try {
       await handleAuthenticate(loginData);
     } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.response?.data);
-        Alert.alert("Erro", "Não foi possível realizar login");
+      if (error instanceof AppError) {
+        notify({
+          message: error.message,
+          messageType: "ERROR",
+        });
       }
     }
   }
