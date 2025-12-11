@@ -53,8 +53,6 @@ export function LoginForm() {
   const keyboardVisibleHeight = Math.floor(height * 0.063);
   const keyboardHideHeight = Math.floor(height * 0.289);
 
-  console.log({ isKeyboardVisible, keyboardHideHeight, keyboardVisibleHeight });
-
   async function onSubmit(loginData: FormLoginParams) {
     try {
       await handleAuthenticate(loginData);
