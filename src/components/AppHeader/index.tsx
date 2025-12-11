@@ -6,11 +6,13 @@ import logo from "@/assets/logo.png";
 import { colors } from "@/shared/colors";
 
 import { useAuthContext } from "@/context/auth.context";
+import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
 import { Button } from "../Button";
 
 export function AppHeader() {
   const { handleLogout } = useAuthContext();
+  const { openBottomSheet, closeBottomSheet } = useBottomSheetContext();
 
   return (
     <View className="w-full flex-row justify-between">
@@ -27,7 +29,12 @@ export function AppHeader() {
         </TouchableOpacity>
       </View>
 
-      <Button style={{ width: 150, height: 50 }}>
+      <Button
+        style={{ width: 150, height: 50 }}
+        onPress={() =>
+          openBottomSheet(<Text>Formulário da nova transação</Text>, 0)
+        }
+      >
         <Text className="font-bold text-sm">Nova transação</Text>
       </Button>
     </View>
