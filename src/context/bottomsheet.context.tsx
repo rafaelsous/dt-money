@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { TouchableWithoutFeedback, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 import { colors } from "@/shared/colors";
@@ -26,6 +27,7 @@ function BottomSheetContextProvider({
   const [index, setIndex] = useState<number>(-1);
   const [isOpen, setIsOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const insets = useSafeAreaInsets();
   const snapPoints = ["70%", "90%"];
 
   const openBottomSheet = useCallback(
@@ -82,8 +84,15 @@ function BottomSheetContextProvider({
           borderTopRightRadius: 32,
           elevation: 9,
         }}
+        keyboardBehavior="extend"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
       >
-        <BottomSheetScrollView>{content}</BottomSheetScrollView>
+        <BottomSheetScrollView
+          contentContainerStyle={{ paddingBottom: insets.bottom }}
+        >
+          {content}
+        </BottomSheetScrollView>
       </BottomSheet>
     </BottomSheetContext.Provider>
   );

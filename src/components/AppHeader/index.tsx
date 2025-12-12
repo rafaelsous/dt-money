@@ -13,7 +13,7 @@ import { NewTransaction } from "../NewTransaction";
 
 export function AppHeader() {
   const { handleLogout } = useAuthContext();
-  const { openBottomSheet, closeBottomSheet } = useBottomSheetContext();
+  const { openBottomSheet } = useBottomSheetContext();
 
   return (
     <View className="w-full flex-row justify-between">
