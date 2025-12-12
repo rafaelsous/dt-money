@@ -9,6 +9,7 @@ import { useAuthContext } from "@/context/auth.context";
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
 import { Button } from "../Button";
+import { NewTransaction } from "../NewTransaction";
 
 export function AppHeader() {
   const { handleLogout } = useAuthContext();
@@ -31,9 +32,7 @@ export function AppHeader() {
 
       <Button
         style={{ width: 150, height: 50 }}
-        onPress={() =>
-          openBottomSheet(<Text>Formulário da nova transação</Text>, 0)
-        }
+        onPress={() => openBottomSheet(<NewTransaction />, 0)}
       >
         <Text className="font-bold text-sm">Nova transação</Text>
       </Button>
