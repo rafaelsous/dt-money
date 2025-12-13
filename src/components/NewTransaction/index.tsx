@@ -7,6 +7,7 @@ import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { colors } from "@/shared/colors";
 
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
+import { SelectType } from "../SelectType";
 
 type CreateTransactionDTO = {
   typeId: number;
@@ -33,8 +34,6 @@ export function NewTransaction() {
       [key]: value,
     }));
   }
-
-  console.log(transaction);
 
   return (
     <View className="py-5 px-8">
@@ -69,6 +68,11 @@ export function NewTransaction() {
           minValue={0}
           onChangeValue={(value) => setTransactionData("value", value ?? 0)}
           renderTextInput={(props) => <BottomSheetTextInput {...props} />}
+        />
+
+        <SelectType
+          typeId={transaction.typeId}
+          setTransactionType={(typeId) => setTransactionData("typeId", typeId)}
         />
       </View>
     </View>
