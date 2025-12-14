@@ -7,6 +7,7 @@ import { Snackbar } from "@/components/Snackbar";
 import { AuthContextProvider } from "@/context/auth.context";
 import { SnackbarContextProvider } from "@/context/snackbar.context";
 import { BottomSheetContextProvider } from "@/context/bottomsheet.context";
+import { TransactionContextProvider } from "@/context/transaction.context";
 
 import { Routes } from "@/routes";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -17,11 +18,13 @@ export default function App() {
       <GestureHandlerRootView className="flex-1">
         <SnackbarContextProvider>
           <AuthContextProvider>
-            <BottomSheetContextProvider>
-              <Routes />
+            <TransactionContextProvider>
+              <BottomSheetContextProvider>
+                <Routes />
 
-              <Snackbar />
-            </BottomSheetContextProvider>
+                <Snackbar />
+              </BottomSheetContextProvider>
+            </TransactionContextProvider>
           </AuthContextProvider>
         </SnackbarContextProvider>
       </GestureHandlerRootView>

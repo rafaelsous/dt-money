@@ -2,6 +2,7 @@ import axios from "axios";
 import { Platform } from "react-native";
 
 import { AppError } from "@/helpers/AppError";
+import { addTokenToRequestHeader } from "@/helpers/axios.helper";
 
 const isPhysicalDevice: boolean = true;
 
@@ -15,6 +16,8 @@ const baseUrl = Platform.select({
 export const dtMoneyApi = axios.create({
   baseURL: baseUrl,
 });
+
+addTokenToRequestHeader(dtMoneyApi);
 
 dtMoneyApi.interceptors.response.use(
   (config) => config,
