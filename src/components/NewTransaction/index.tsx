@@ -7,7 +7,9 @@ import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { colors } from "@/shared/colors";
 
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
+
 import { SelectType } from "../SelectType";
+import { SelectCategoryModal } from "../SelectCategoryModal";
 
 type CreateTransactionDTO = {
   typeId: number;
@@ -68,6 +70,13 @@ export function NewTransaction() {
           minValue={0}
           onChangeValue={(value) => setTransactionData("value", value ?? 0)}
           renderTextInput={(props) => <BottomSheetTextInput {...props} />}
+        />
+
+        <SelectCategoryModal
+          selectedCategory={transaction.categoryId}
+          onSelect={(categoryId) =>
+            setTransactionData("categoryId", categoryId)
+          }
         />
 
         <SelectType
