@@ -13,7 +13,7 @@ type Props = {
 
 export function SelectType({ setTransactionType, typeId }: Readonly<Props>) {
   return (
-    <View className="flex-row justify-between gap-2">
+    <View className="mt-8 flex-row justify-between gap-2">
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={() => setTransactionType(TransactionTypes.REVENUE)}

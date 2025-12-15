@@ -42,7 +42,7 @@ export function SelectCategoryModal({
   return (
     <>
       <TouchableOpacity
-        className="h-[50] px-4 justify-center gap-2 bg-background-primary rounded-md"
+        className="h-[50] mt-8 px-4 justify-center gap-2 bg-background-primary rounded-md"
         activeOpacity={0.7}
         onPress={handleToggleShowModal}
       >

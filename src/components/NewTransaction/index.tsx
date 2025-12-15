@@ -14,6 +14,7 @@ import { schema } from "./schema";
 import { Button } from "../Button";
 import { SelectType } from "../SelectType";
 import { SelectCategoryModal } from "../SelectCategoryModal";
+import { ErrorMessage } from "../ErrorMessage";
 
 type CreateTransactionDTO = {
   typeId: number;
@@ -79,7 +80,7 @@ export function NewTransaction() {
         </TouchableOpacity>
       </View>
 
-      <View className="flex-1 my-8 gap-8">
+      <View className="flex-1 my-8">
         <BottomSheetTextInput
           className="h-[50px] py-2 px-4 bg-background-primary rounded-[6px] text-lg text-white"
           placeholder="Descrição"
@@ -87,9 +88,12 @@ export function NewTransaction() {
           value={transaction.description}
           onChangeText={(value) => setTransactionData("description", value)}
         />
+        {validationErrors?.description && (
+          <ErrorMessage>{validationErrors.description}</ErrorMessage>
+        )}
 
         <CurrencyInput
-          className="h-[50px] py-2 px-4 bg-background-primary rounded-[6px] text-lg text-white"
+          className="h-[50px] mt-8 py-2 px-4 bg-background-primary rounded-[6px] text-lg text-white"
           value={transaction.value}
           prefix="R$ "
           delimiter="."
@@ -99,6 +103,9 @@ export function NewTransaction() {
           onChangeValue={(value) => setTransactionData("value", value ?? 0)}
           renderTextInput={(props) => <BottomSheetTextInput {...props} />}
         />
+        {validationErrors?.value && (
+          <ErrorMessage>{validationErrors.value}</ErrorMessage>
+        )}
 
         <SelectCategoryModal
           selectedCategory={transaction.categoryId}
@@ -106,13 +113,19 @@ export function NewTransaction() {
             setTransactionData("categoryId", categoryId)
           }
         />
+        {validationErrors?.categoryId && (
+          <ErrorMessage>{validationErrors.categoryId}</ErrorMessage>
+        )}
 
         <SelectType
           typeId={transaction.typeId}
           setTransactionType={(typeId) => setTransactionData("typeId", typeId)}
         />
+        {validationErrors?.typeId && (
+          <ErrorMessage>{validationErrors.typeId}</ErrorMessage>
+        )}
 
-        <View className="my-4">
+        <View className="mt-8 mb-4">
           <Button onPress={handleNewTransaction}>Cadastrar</Button>
         </View>
       </View>
