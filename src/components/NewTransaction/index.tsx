@@ -1,3 +1,4 @@
+import * as Yup from "yup";
 import { useState } from "react";
 import { XIcon } from "phosphor-react-native";
 import CurrencyInput from "react-native-currency-input";
@@ -8,6 +9,9 @@ import { colors } from "@/shared/colors";
 
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
+import { schema } from "./schema";
+
+import { Button } from "../Button";
 import { SelectType } from "../SelectType";
 import { SelectCategoryModal } from "../SelectCategoryModal";
 
@@ -18,14 +22,18 @@ type CreateTransactionDTO = {
   description: string;
 };
 
+type ValidationError = Record<keyof CreateTransactionDTO, string>;
+
 export function NewTransaction() {
-  const { closeBottomSheet } = useBottomSheetContext();
   const [transaction, setTransaction] = useState<CreateTransactionDTO>({
     typeId: 0,
     categoryId: 0,
     value: 0,
     description: "",
   });
+  const [validationErrors, setValidationErrors] = useState<ValidationError>();
+
+  const { closeBottomSheet } = useBottomSheetContext();
 
   function setTransactionData(
     key: keyof CreateTransactionDTO,
@@ -35,6 +43,26 @@ export function NewTransaction() {
       ...prevState,
       [key]: value,
     }));
+  }
+
+  async function handleNewTransaction() {
+    try {
+      await schema.validate(transaction, {
+        abortEarly: false,
+      });
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = {} as ValidationError;
+
+        error.inner.forEach((err) => {
+          if (err.path) {
+            errors[err.path as keyof CreateTransactionDTO] = err.message;
+          }
+        });
+
+        setValidationErrors(errors);
+      }
+    }
   }
 
   return (
@@ -83,6 +111,10 @@ export function NewTransaction() {
           typeId={transaction.typeId}
           setTransactionType={(typeId) => setTransactionData("typeId", typeId)}
         />
+
+        <View className="my-4">
+          <Button onPress={handleNewTransaction}>Cadastrar</Button>
+        </View>
       </View>
     </View>
   );
