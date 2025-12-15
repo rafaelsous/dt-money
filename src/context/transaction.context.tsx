@@ -1,6 +1,10 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 
-import { getTransactionCategories } from "@/shared/services/dt-money/transaction.service";
+import {
+  getTransactionCategories,
+  addTransaction,
+} from "@/shared/services/dt-money/transaction.service";
+import { CreateTransactionDTO } from "@/components/NewTransaction";
 
 export type TransactionCategory = {
   id: number;
@@ -9,6 +13,7 @@ export type TransactionCategory = {
 
 export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
+  createTransaction: (transaction: CreateTransactionDTO) => Promise<void>;
   categories: TransactionCategory[];
 };
 
@@ -25,10 +30,16 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     setCategories(response);
   }
 
+  async function createTransaction(transaction: CreateTransactionDTO) {
+    await addTransaction(transaction);
+    await fetchCategories();
+  }
+
   return (
     <TransactionContext.Provider
       value={{
         fetchCategories,
+        createTransaction,
         categories,
       }}
     >

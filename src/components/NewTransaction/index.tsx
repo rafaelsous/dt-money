@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { XIcon } from "phosphor-react-native";
 import CurrencyInput from "react-native-currency-input";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 import { colors } from "@/shared/colors";
@@ -15,8 +15,10 @@ import { Button } from "../Button";
 import { SelectType } from "../SelectType";
 import { SelectCategoryModal } from "../SelectCategoryModal";
 import { ErrorMessage } from "../ErrorMessage";
+import { useTransactionContext } from "@/context/transaction.context";
+import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
 
-type CreateTransactionDTO = {
+export type CreateTransactionDTO = {
   typeId: number;
   categoryId: number;
   value: number;
@@ -24,6 +26,13 @@ type CreateTransactionDTO = {
 };
 
 type ValidationError = Record<keyof CreateTransactionDTO, string>;
+
+const transactionDefaultValues = {
+  typeId: 0,
+  categoryId: 0,
+  value: 0,
+  description: "",
+};
 
 export function NewTransaction() {
   const [transaction, setTransaction] = useState<CreateTransactionDTO>({
@@ -33,8 +42,11 @@ export function NewTransaction() {
     description: "",
   });
   const [validationErrors, setValidationErrors] = useState<ValidationError>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { closeBottomSheet } = useBottomSheetContext();
+  const { createTransaction } = useTransactionContext();
+  const { handleError } = useErrorHandler();
 
   function setTransactionData(
     key: keyof CreateTransactionDTO,
@@ -48,9 +60,13 @@ export function NewTransaction() {
 
   async function handleNewTransaction() {
     try {
+      setIsLoading(true);
       await schema.validate(transaction, {
         abortEarly: false,
       });
+
+      await createTransaction(transaction);
+      closeBottomSheet();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = {} as ValidationError;
@@ -62,7 +78,11 @@ export function NewTransaction() {
         });
 
         setValidationErrors(errors);
+      } else {
+        handleError(error, "Não foi possível cadastrar nova transação.");
       }
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -125,8 +145,14 @@ export function NewTransaction() {
           <ErrorMessage>{validationErrors.typeId}</ErrorMessage>
         )}
 
-        <View className="mt-8 mb-4">
-          <Button onPress={handleNewTransaction}>Cadastrar</Button>
+        <View className="mt-8">
+          <Button disabled={isLoading} onPress={handleNewTransaction}>
+            {isLoading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
+              "Cadastrar"
+            )}
+          </Button>
         </View>
       </View>
     </View>

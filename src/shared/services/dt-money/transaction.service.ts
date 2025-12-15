@@ -1,4 +1,5 @@
 import { dtMoneyApi } from "@/api/dt-money";
+import { CreateTransactionDTO } from "@/components/NewTransaction";
 import { TransactionCategory } from "@/context/transaction.context";
 
 export async function getTransactionCategories(): Promise<
@@ -9,4 +10,8 @@ export async function getTransactionCategories(): Promise<
   );
 
   return data;
+}
+
+export async function addTransaction(transaction: CreateTransactionDTO) {
+  await dtMoneyApi.post("/transaction", transaction);
 }
