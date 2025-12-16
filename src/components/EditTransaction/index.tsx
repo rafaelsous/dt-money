@@ -17,32 +17,44 @@ import { SelectCategoryModal } from "../SelectCategoryModal";
 import { ErrorMessage } from "../ErrorMessage";
 import { useTransactionContext } from "@/context/transaction.context";
 import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
+import { Transaction } from "@/shared/services/dt-money/transaction.service";
+import { CreateTransactionDTO } from "../NewTransaction";
+import { useSnackbarContext } from "@/context/snackbar.context";
 
-export type CreateTransactionDTO = {
+export type UpdateTransactionDTO = {
+  id: number;
   typeId: number;
   categoryId: number;
   value: number;
   description: string;
 };
 
-type ValidationError = Record<keyof CreateTransactionDTO, string>;
+type ValidationError = Record<keyof UpdateTransactionDTO, string>;
 
-export function NewTransaction() {
-  const [transaction, setTransaction] = useState<CreateTransactionDTO>({
-    typeId: 0,
-    categoryId: 0,
-    value: 0,
-    description: "",
+type Props = {
+  transaction: Transaction;
+};
+
+export function EditTransaction({
+  transaction: transactionToUpdate,
+}: Readonly<Props>) {
+  const [transaction, setTransaction] = useState<UpdateTransactionDTO>({
+    id: transactionToUpdate.id,
+    typeId: transactionToUpdate.typeId,
+    categoryId: transactionToUpdate.categoryId,
+    value: transactionToUpdate.value,
+    description: transactionToUpdate.description,
   });
   const [validationErrors, setValidationErrors] = useState<ValidationError>();
   const [isLoading, setIsLoading] = useState(false);
 
   const { closeBottomSheet } = useBottomSheetContext();
-  const { createTransaction } = useTransactionContext();
+  const { updateTransaction } = useTransactionContext();
+  const { notify } = useSnackbarContext();
   const { handleError } = useErrorHandler();
 
   function setTransactionData(
-    key: keyof CreateTransactionDTO,
+    key: keyof UpdateTransactionDTO,
     value: string | number
   ) {
     setTransaction((prevState) => ({
@@ -51,15 +63,19 @@ export function NewTransaction() {
     }));
   }
 
-  async function handleNewTransaction() {
+  async function handleUpdateTransaction() {
     try {
       setIsLoading(true);
       await schema.validate(transaction, {
         abortEarly: false,
       });
 
-      await createTransaction(transaction);
+      await updateTransaction(transaction);
       closeBottomSheet();
+      notify({
+        messageType: "SUCCESS",
+        message: "Transação atualizado com sucesso!",
+      });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = {} as ValidationError;
@@ -82,7 +98,7 @@ export function NewTransaction() {
   return (
     <View className="py-5 px-8">
       <View className="flex-row items-center justify-between">
-        <Text className="text-xl font-bold text-white">Nova transação</Text>
+        <Text className="text-xl font-bold text-white">Editar transação</Text>
 
         <TouchableOpacity
           activeOpacity={0.7}
@@ -139,11 +155,11 @@ export function NewTransaction() {
         )}
 
         <View className="mt-8">
-          <Button disabled={isLoading} onPress={handleNewTransaction}>
+          <Button disabled={isLoading} onPress={handleUpdateTransaction}>
             {isLoading ? (
               <ActivityIndicator color={colors.white} />
             ) : (
-              "Cadastrar"
+              "Atualizar"
             )}
           </Button>
         </View>

@@ -4,6 +4,7 @@ import { dtMoneyApi } from "@/api/dt-money";
 
 import { CreateTransactionDTO } from "@/components/NewTransaction";
 import { TransactionCategory } from "@/context/transaction.context";
+import { UpdateTransactionDTO } from "@/components/EditTransaction";
 
 export type GetTransactionParams = {
   page: number;
@@ -79,4 +80,8 @@ export async function getTransactions(
 
 export async function removeTransaction(transactionId: number): Promise<void> {
   await dtMoneyApi.delete(`/transaction/${transactionId}`);
+}
+
+export async function changeTransaction(transaction: UpdateTransactionDTO) {
+  await dtMoneyApi.put("/transaction", transaction);
 }

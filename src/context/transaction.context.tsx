@@ -10,11 +10,13 @@ import {
   getTransactionCategories,
   addTransaction,
   getTransactions,
+  changeTransaction,
   Transaction,
   TotalTransactions,
 } from "@/shared/services/dt-money/transaction.service";
 
 import { CreateTransactionDTO } from "@/components/NewTransaction";
+import { UpdateTransactionDTO } from "@/components/EditTransaction";
 
 export type TransactionCategory = {
   id: number;
@@ -25,6 +27,7 @@ export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
   createTransaction: (transaction: CreateTransactionDTO) => Promise<void>;
   fetchTransactions: () => Promise<void>;
+  updateTransaction: (transaction: UpdateTransactionDTO) => Promise<void>;
   categories: TransactionCategory[];
   transactions: Transaction[];
   totalTransactions: TotalTransactions;
@@ -72,6 +75,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         fetchCategories,
         createTransaction,
         fetchTransactions,
+        updateTransaction,
         categories,
         transactions,
         totalTransactions,
@@ -80,6 +84,10 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
       {children}
     </TransactionContext.Provider>
   );
+}
+
+async function updateTransaction(transaction: UpdateTransactionDTO) {
+  await changeTransaction(transaction);
 }
 
 function useTransactionContext() {

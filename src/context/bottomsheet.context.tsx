@@ -32,8 +32,6 @@ function BottomSheetContextProvider({
 
   const openBottomSheet = useCallback(
     (newContent: React.ReactNode, index: number) => {
-      console.log("Opening bottom sheet...");
-
       setIndex(index);
       setContent(newContent);
       setIsOpen(true);

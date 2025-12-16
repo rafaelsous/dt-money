@@ -7,6 +7,8 @@ import { Transaction } from "@/shared/services/dt-money/transaction.service";
 
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
+import { EditTransaction } from "../EditTransaction";
+
 type Props = {
   transaction: Transaction;
 };
@@ -17,7 +19,10 @@ export function LeftAction({ transaction }: Readonly<Props>) {
   return (
     <Pressable
       onPress={() => {
-        openBottomSheet(<></>, 1);
+        openBottomSheet(
+          <EditTransaction transaction={transaction}></EditTransaction>,
+          0
+        );
       }}
     >
       <View className="w-[80] h-[140] items-center justify-center bg-accent-blue-dark rounded-l-md">
