@@ -16,7 +16,7 @@ export function AppHeader() {
   const { openBottomSheet } = useBottomSheetContext();
 
   return (
-    <View className="w-full flex-row justify-between">
+    <View className="w-full flex-row justify-between bg-background-primary">
       <View className="gap-2">
         <Image source={logo} className="w-[117px] h-[25px]" />
 
@@ -32,7 +32,9 @@ export function AppHeader() {
 
       <Button
         style={{ width: 150, height: 50 }}
-        onPress={() => openBottomSheet(<NewTransaction />, 0)}
+        onPress={() => {
+          openBottomSheet(<NewTransaction />, 0);
+        }}
       >
         <Text className="font-bold text-sm">Nova transação</Text>
       </Button>
