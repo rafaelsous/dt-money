@@ -17,7 +17,7 @@ export const ListHeader = () => {
         <View className="h-[50] bg-background-primary" />
 
         <ScrollView
-          className="absolute pl-6 h-[141]"
+          className="absolute ml-6 h-[141]"
           horizontal
           showsHorizontalScrollIndicator={false}
         >

@@ -1,64 +1,28 @@
-import {
-  ArrowCircleDownIcon,
-  ArrowCircleUpIcon,
-  CurrencyCircleDollarIcon,
-} from "phosphor-react-native";
 import { Text, View } from "react-native";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-import { colors } from "@/shared/colors";
-
+import { ICONS } from "@/strategies/icon-strategy";
 import { TransactionTypes } from "@/enums/TransactionTpes";
+import { CARD_DATA } from "@/strategies/card-data-strategy";
+import { useTransactionContext } from "@/context/transaction.context";
 
-type TransactionCardType = TransactionTypes | "total";
-
-type IconData = {
-  icon: React.ReactNode;
-  color: string;
-};
+export type TransactionCardType = TransactionTypes | "total";
 
 type Props = {
   type: TransactionCardType;
   amount: number;
 };
 
-const ICONS: Record<TransactionCardType, IconData> = {
-  [TransactionTypes.EXPENSE]: {
-    icon: <ArrowCircleDownIcon size={26} color={colors["accent-red"]} />,
-    color: colors["accent-red"],
-  },
-  [TransactionTypes.REVENUE]: {
-    icon: <ArrowCircleUpIcon size={26} color={colors["accent-brand-light"]} />,
-    color: colors["accent-brand-light"],
-  },
-  total: {
-    icon: <CurrencyCircleDollarIcon color={colors.white} />,
-    color: colors.white,
-  },
-};
-
-type CardData = {
-  label: string;
-  bgColor: string;
-};
-
-const CARD_DATA: Record<TransactionCardType, CardData> = {
-  [TransactionTypes.EXPENSE]: {
-    label: "Saída",
-    bgColor: "background-tertiary",
-  },
-  [TransactionTypes.REVENUE]: {
-    label: "Entrada",
-    bgColor: "background-tertiary",
-  },
-  total: {
-    label: "Total",
-    bgColor: "accent-brand-background-primary",
-  },
-};
-
 export function TransactionCard({ type, amount }: Readonly<Props>) {
   const iconData = ICONS[type];
   const cardData = CARD_DATA[type];
+
+  const { transactions } = useTransactionContext();
+
+  const lastTransaction = transactions.find(
+    ({ type: transactionType }) => transactionType.id === type
+  );
 
   return (
     <View
@@ -66,13 +30,27 @@ export function TransactionCard({ type, amount }: Readonly<Props>) {
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-base text-white">{cardData.label}</Text>
-        <View>{iconData.icon}</View>
+        {iconData.icon}
       </View>
 
       <View>
         <Text className="text-2xl text-gray-400 font-bold">
           R$ {amount.toFixed(2).replace(".", ",")}
         </Text>
+
+        {type !== "total" && (
+          <Text className="text-gray-700">
+            {lastTransaction?.createdAt
+              ? format(
+                  lastTransaction?.createdAt,
+                  `'Última ${cardData.label.toLowerCase()} em' d 'de' MMMM`,
+                  {
+                    locale: ptBR,
+                  }
+                )
+              : "Nenhuma transação encontrada"}
+          </Text>
+        )}
       </View>
     </View>
   );
