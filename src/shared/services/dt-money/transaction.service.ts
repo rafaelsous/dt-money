@@ -1,6 +1,53 @@
+import qs from "qs";
+
 import { dtMoneyApi } from "@/api/dt-money";
+
 import { CreateTransactionDTO } from "@/components/NewTransaction";
 import { TransactionCategory } from "@/context/transaction.context";
+
+export type GetTransactionParams = {
+  page: number;
+  perPage: number;
+  from?: number;
+  to?: number;
+  typeId?: number;
+  categoryId?: number;
+  searchText?: string;
+};
+
+export type Transaction = {
+  id: number;
+  value: number;
+  description: string;
+  categoryId: number;
+  typeId: number;
+  type: {
+    id: number;
+    name: string;
+  };
+  category: {
+    id: number;
+    name: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type TotalTransactions = {
+  revenue: number;
+  expense: number;
+  total: number;
+};
+
+export type GetTransactionResponse = {
+  data: Transaction[];
+  totalRows: number;
+  totalPages: number;
+  page: number;
+  perPage: number;
+  totalTransactions: TotalTransactions;
+};
 
 export async function getTransactionCategories(): Promise<
   TransactionCategory[]
@@ -14,4 +61,18 @@ export async function getTransactionCategories(): Promise<
 
 export async function addTransaction(transaction: CreateTransactionDTO) {
   await dtMoneyApi.post("/transaction", transaction);
+}
+
+export async function getTransactions(
+  params: GetTransactionParams
+): Promise<GetTransactionResponse> {
+  const { data } = await dtMoneyApi.get<GetTransactionResponse>(
+    "/transaction",
+    {
+      params,
+      paramsSerializer: (p) => qs.stringify(p, { arrayFormat: "repeat" }),
+    }
+  );
+
+  return data;
 }

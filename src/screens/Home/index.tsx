@@ -9,7 +9,7 @@ import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
 import { ListHeader } from "@/components/ListHeader";
 
 export function Home() {
-  const { fetchCategories } = useTransactionContext();
+  const { fetchCategories, fetchTransactions } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
   async function handleFetchCategories() {
@@ -26,6 +26,7 @@ export function Home() {
   useEffect(() => {
     (async () => {
       await handleFetchCategories();
+      await fetchTransactions();
     })();
   }, []);
 

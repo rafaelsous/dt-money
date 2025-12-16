@@ -1,9 +1,18 @@
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 import {
   getTransactionCategories,
   addTransaction,
+  getTransactions,
+  Transaction,
 } from "@/shared/services/dt-money/transaction.service";
+
 import { CreateTransactionDTO } from "@/components/NewTransaction";
 
 export type TransactionCategory = {
@@ -14,7 +23,9 @@ export type TransactionCategory = {
 export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
   createTransaction: (transaction: CreateTransactionDTO) => Promise<void>;
+  fetchTransactions: () => Promise<void>;
   categories: TransactionCategory[];
+  transactions: Transaction[];
 };
 
 const TransactionContext = createContext<TransactionContextType>(
@@ -23,6 +34,7 @@ const TransactionContext = createContext<TransactionContextType>(
 
 function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   async function fetchCategories() {
     const response = await getTransactionCategories();
@@ -35,12 +47,23 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     await fetchCategories();
   }
 
+  const fetchTransactions = useCallback(async () => {
+    const transationResponse = await getTransactions({
+      page: 1,
+      perPage: 10,
+    });
+
+    setTransactions(transationResponse.data);
+  }, []);
+
   return (
     <TransactionContext.Provider
       value={{
         fetchCategories,
         createTransaction,
+        fetchTransactions,
         categories,
+        transactions,
       }}
     >
       {children}
