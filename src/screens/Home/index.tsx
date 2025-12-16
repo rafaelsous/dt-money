@@ -7,9 +7,11 @@ import { useTransactionContext } from "@/context/transaction.context";
 import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
 
 import { ListHeader } from "@/components/ListHeader";
+import { TransactionCard } from "@/components/TransactionCard";
 
 export function Home() {
-  const { fetchCategories, fetchTransactions } = useTransactionContext();
+  const { fetchCategories, fetchTransactions, transactions } =
+    useTransactionContext();
   const { handleError } = useErrorHandler();
 
   async function handleFetchCategories() {
@@ -33,8 +35,11 @@ export function Home() {
     <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
         className="bg-background-secondary"
-        data={[]}
-        renderItem={() => <></>}
+        keyExtractor={(item) => `transaction-${item.id}`}
+        data={transactions}
+        renderItem={({ item: transaction }) => (
+          <TransactionCard transaction={transaction} />
+        )}
         ListHeaderComponent={ListHeader}
       />
     </SafeAreaView>

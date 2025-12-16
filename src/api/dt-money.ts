@@ -9,7 +9,7 @@ const isPhysicalDevice: boolean = true;
 const baseUrl = Platform.select({
   ios: "http://localhost:3001",
   android: isPhysicalDevice
-    ? "http://192.168.10.105:3001"
+    ? "http://192.168.10.104:3001"
     : "http://10.0.2.2:3001",
 });
 

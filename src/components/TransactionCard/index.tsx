@@ -1,57 +1,63 @@
+import clsx from "clsx";
 import { Text, View } from "react-native";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { CalendarBlankIcon, TagSimpleIcon } from "phosphor-react-native";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
-import { ICONS } from "@/strategies/icon-strategy";
+import { colors } from "@/shared/colors";
+
+import { formatDateTime } from "@/utils/formatDateTime";
 import { TransactionTypes } from "@/enums/TransactionTpes";
-import { CARD_DATA } from "@/strategies/card-data-strategy";
-import { useTransactionContext } from "@/context/transaction.context";
-
-export type TransactionCardType = TransactionTypes | "total";
+import { numberToCurrency } from "@/utils/numberToCurrency";
+import { Transaction } from "@/shared/services/dt-money/transaction.service";
 
 type Props = {
-  type: TransactionCardType;
-  amount: number;
+  transaction: Transaction;
 };
 
-export function TransactionCard({ type, amount }: Readonly<Props>) {
-  const iconData = ICONS[type];
-  const cardData = CARD_DATA[type];
-
-  const { transactions } = useTransactionContext();
-
-  const lastTransaction = transactions.find(
-    ({ type: transactionType }) => transactionType.id === type
-  );
+export function TransactionCard({ transaction }: Readonly<Props>) {
+  const isExpensiveTransaction =
+    transaction.type.id === TransactionTypes.EXPENSE;
 
   return (
-    <View
-      className={`min-w-[280] mr-6 px-8 py-6 justify-between bg-${cardData.bgColor} rounded-md`}
+    <Swipeable
+      containerStyle={{
+        width: "90%",
+        marginBottom: 16,
+        alignItems: "center",
+        alignSelf: "center",
+        overflow: "visible",
+      }}
     >
-      <View className="flex-row items-center justify-between">
-        <Text className="text-base text-white">{cardData.label}</Text>
-        {iconData.icon}
-      </View>
-
-      <View>
-        <Text className="text-2xl text-gray-400 font-bold">
-          R$ {amount.toFixed(2).replace(".", ",")}
+      <View className="h-[140] p-6 bg-background-tertiary rounded-md gap-2">
+        <Text className="text-base text-white">{transaction.description}</Text>
+        <Text
+          className={clsx(
+            "text-2xl font-bold",
+            isExpensiveTransaction
+              ? "text-accent-red"
+              : "text-accent-brand-light"
+          )}
+        >
+          {isExpensiveTransaction && "- "}
+          {numberToCurrency(transaction.value)}
         </Text>
 
-        {type !== "total" && (
-          <Text className="text-gray-700">
-            {lastTransaction?.createdAt
-              ? format(
-                  lastTransaction?.createdAt,
-                  `'Última ${cardData.label.toLowerCase()} em' d 'de' MMMM`,
-                  {
-                    locale: ptBR,
-                  }
-                )
-              : "Nenhuma transação encontrada"}
-          </Text>
-        )}
+        <View className="w-full flex-1 flex-row items-center justify-between">
+          <View className="flex-row items-center gap-2">
+            <TagSimpleIcon size={16} color={colors.gray[700]} />
+            <Text className="text-base text-gray-700">
+              {transaction.category.name}
+            </Text>
+          </View>
+
+          <View className="flex-row items-center gap-2">
+            <CalendarBlankIcon size={16} color={colors.gray[700]} />
+            <Text className="text-base text-gray-700">
+              {formatDateTime(transaction.createdAt, "DD/MM/YYYY")}
+            </Text>
+          </View>
+        </View>
       </View>
-    </View>
+    </Swipeable>
   );
 }

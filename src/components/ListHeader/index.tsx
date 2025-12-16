@@ -5,7 +5,7 @@ import { TransactionTypes } from "@/enums/TransactionTpes";
 import { useTransactionContext } from "@/context/transaction.context";
 
 import { AppHeader } from "@/components/AppHeader";
-import { TransactionCard } from "../TransactionCard";
+import { TransactionSummaryCard } from "../TransactionSummaryCard";
 
 export const ListHeader = () => {
   const { totalTransactions } = useTransactionContext();
@@ -21,17 +21,20 @@ export const ListHeader = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
         >
-          <TransactionCard
+          <TransactionSummaryCard
             type={TransactionTypes.EXPENSE}
             amount={totalTransactions.expense}
           />
 
-          <TransactionCard
+          <TransactionSummaryCard
             type={TransactionTypes.REVENUE}
             amount={totalTransactions.revenue}
           />
 
-          <TransactionCard type="total" amount={totalTransactions.total} />
+          <TransactionSummaryCard
+            type="total"
+            amount={totalTransactions.total}
+          />
         </ScrollView>
       </View>
     </>

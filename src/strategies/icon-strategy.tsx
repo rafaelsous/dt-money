@@ -8,7 +8,7 @@ import { colors } from "@/shared/colors";
 
 import { TransactionTypes } from "@/enums/TransactionTpes";
 
-import { TransactionCardType } from "@/components/TransactionCard";
+import { TransactionCardType } from "@/components/TransactionSummaryCard";
 
 type IconData = {
   icon: React.ReactNode;

@@ -5,7 +5,7 @@ type CardData = {
 
 import { TransactionTypes } from "@/enums/TransactionTpes";
 
-import { TransactionCardType } from "@/components/TransactionCard";
+import { TransactionCardType } from "@/components/TransactionSummaryCard";
 
 export const CARD_DATA: Record<TransactionCardType, CardData> = {
   [TransactionTypes.EXPENSE]: {
