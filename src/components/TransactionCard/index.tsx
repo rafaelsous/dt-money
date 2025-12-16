@@ -29,7 +29,7 @@ export function TransactionCard({ transaction }: Readonly<Props>) {
         alignSelf: "center",
         overflow: "visible",
       }}
-      renderRightActions={() => <RightAction />}
+      renderRightActions={() => <RightAction transactionId={transaction.id} />}
       overshootRight={false}
     >
       <View className="h-[140] p-6 bg-background-tertiary rounded-md gap-2">

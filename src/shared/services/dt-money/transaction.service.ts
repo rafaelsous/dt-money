@@ -76,3 +76,7 @@ export async function getTransactions(
 
   return data;
 }
+
+export async function removeTransaction(transactionId: number): Promise<void> {
+  await dtMoneyApi.delete(`/transaction/${transactionId}`);
+}
