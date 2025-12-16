@@ -11,6 +11,7 @@ import { numberToCurrency } from "@/utils/numberToCurrency";
 import { Transaction } from "@/shared/services/dt-money/transaction.service";
 
 import { RightAction } from "../RightAction";
+import { LeftAction } from "../LeftAction";
 
 type Props = {
   transaction: Transaction;
@@ -30,7 +31,9 @@ export function TransactionCard({ transaction }: Readonly<Props>) {
         overflow: "visible",
       }}
       renderRightActions={() => <RightAction transactionId={transaction.id} />}
+      renderLeftActions={() => <LeftAction transaction={transaction} />}
       overshootRight={false}
+      overshootLeft={false}
     >
       <View className="h-[140] p-6 bg-background-tertiary rounded-md gap-2">
         <Text className="text-base text-white">{transaction.description}</Text>
