@@ -27,13 +27,6 @@ export type CreateTransactionDTO = {
 
 type ValidationError = Record<keyof CreateTransactionDTO, string>;
 
-const transactionDefaultValues = {
-  typeId: 0,
-  categoryId: 0,
-  value: 0,
-  description: "",
-};
-
 export function NewTransaction() {
   const [transaction, setTransaction] = useState<CreateTransactionDTO>({
     typeId: 0,
