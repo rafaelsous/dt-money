@@ -1,0 +1,47 @@
+import {
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { WarningCircleIcon, XIcon } from "phosphor-react-native";
+
+import { colors } from "@/shared/colors";
+
+type Props = {
+  visible: boolean;
+  hideModal: () => void;
+};
+
+export function DeleteModal({ visible, hideModal }: Readonly<Props>) {
+  return (
+    <View className="flex-1 absolute">
+      <Modal
+        animationType="slide"
+        transparent
+        visible={visible}
+        onRequestClose={hideModal}
+      >
+        <TouchableWithoutFeedback onPress={hideModal}>
+          <View className="flex-1 items-center justify-center bg-black/50">
+            <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+              <View className="w-[90%] h-[322] m-5 p-8 gap-16 bg-background-secondary rounded-2xl shadow-lg z-2">
+                <View className="w-full p-3 pb-6 flex-row items-center gap-4 border-b border-gray-800">
+                  <WarningCircleIcon size={22} color={colors.gray[400]} />
+                  <Text className="flex-1 text-xl text-white">
+                    Apagar transação?
+                  </Text>
+
+                  <TouchableOpacity activeOpacity={0.7} onPress={hideModal}>
+                    <XIcon size={20} color={colors.gray[700]} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </View>
+  );
+}
