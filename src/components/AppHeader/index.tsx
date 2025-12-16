@@ -16,7 +16,7 @@ export function AppHeader() {
   const { openBottomSheet } = useBottomSheetContext();
 
   return (
-    <View className="w-full flex-row justify-between bg-background-primary">
+    <View className="w-full flex-row px-8 py-12 justify-between bg-background-primary">
       <View className="gap-2">
         <Image source={logo} className="w-[117px] h-[25px]" />
 

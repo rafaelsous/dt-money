@@ -11,6 +11,7 @@ import {
   addTransaction,
   getTransactions,
   Transaction,
+  TotalTransactions,
 } from "@/shared/services/dt-money/transaction.service";
 
 import { CreateTransactionDTO } from "@/components/NewTransaction";
@@ -26,6 +27,7 @@ export type TransactionContextType = {
   fetchTransactions: () => Promise<void>;
   categories: TransactionCategory[];
   transactions: Transaction[];
+  totalTransactions: TotalTransactions;
 };
 
 const TransactionContext = createContext<TransactionContextType>(
@@ -35,6 +37,13 @@ const TransactionContext = createContext<TransactionContextType>(
 function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [totalTransactions, setTotalTransactions] = useState<TotalTransactions>(
+    {
+      revenue: 0,
+      expense: 0,
+      total: 0,
+    }
+  );
 
   async function fetchCategories() {
     const response = await getTransactionCategories();
@@ -54,6 +63,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     });
 
     setTransactions(transationResponse.data);
+    setTotalTransactions(transationResponse.totalTransactions);
   }, []);
 
   return (
@@ -64,6 +74,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         fetchTransactions,
         categories,
         transactions,
+        totalTransactions,
       }}
     >
       {children}
