@@ -32,7 +32,10 @@ export function Home() {
 
   useEffect(() => {
     (async () => {
-      await Promise.all([handleFetchCategories(), fetchTransactions()]);
+      await Promise.all([
+        handleFetchCategories(),
+        fetchTransactions({ page: 1 }),
+      ]);
     })();
   }, []);
 
