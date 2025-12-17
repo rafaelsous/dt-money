@@ -37,12 +37,14 @@ export type TransactionContextType = {
   totalTransactions: TotalTransactions;
   isLoading: boolean;
   refreshTransactions: () => Promise<void>;
+  loadMoreTransactions: () => Promise<void>;
 };
 
 export type Pagination = {
   page: number;
   perPage: number;
   totalRows?: number;
+  totalPages: number;
 };
 
 const TransactionContext = createContext<TransactionContextType>(
@@ -64,6 +66,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     page: 1,
     perPage: 10,
     totalRows: 0,
+    totalPages: 0,
   });
 
   async function fetchCategories() {
@@ -118,11 +121,18 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         ...pagination,
         page,
         totalRows: transactionResponse.totalRows,
+        totalPages: transactionResponse.totalPages,
       });
       setIsLoading(false);
     },
     [pagination]
   );
+
+  const loadMoreTransactions = useCallback(async () => {
+    if (isLoading || pagination.page >= pagination.totalPages) return;
+
+    fetchTransactions({ page: pagination.page + 1 });
+  }, [isLoading, pagination]);
 
   return (
     <TransactionContext.Provider
@@ -136,6 +146,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         totalTransactions,
         isLoading,
         refreshTransactions,
+        loadMoreTransactions,
       }}
     >
       {children}

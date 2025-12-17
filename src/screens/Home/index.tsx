@@ -16,6 +16,7 @@ export function Home() {
     transactions,
     isLoading,
     refreshTransactions,
+    loadMoreTransactions,
   } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
@@ -49,6 +50,8 @@ export function Home() {
           <TransactionCard transaction={transaction} />
         )}
         ListHeaderComponent={ListHeader}
+        onEndReached={loadMoreTransactions}
+        onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
