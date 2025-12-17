@@ -3,6 +3,7 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -14,6 +15,8 @@ import {
   Transaction,
   TotalTransactions,
 } from "@/shared/services/dt-money/transaction.service";
+
+import { useAuthContext } from "./auth.context";
 
 import { CreateTransactionDTO } from "@/components/NewTransaction";
 import { UpdateTransactionDTO } from "@/components/EditTransaction";
@@ -50,6 +53,7 @@ export type TransactionContextType = {
   handleLoadings: (params: HandleLoadingParams) => void;
   refreshTransactions: () => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
+  clearTransactionContext: () => void;
 };
 
 export type Pagination = {
@@ -63,27 +67,37 @@ const TransactionContext = createContext<TransactionContextType>(
   {} as TransactionContextType
 );
 
+const TOTAL_TRANSACTIONS_DEFAULT_VALUES = {
+  revenue: 0,
+  expense: 0,
+  total: 0,
+};
+
+const LOADINGS_DEFAULT_VALUES = {
+  initial: false,
+  refresh: false,
+  loadMore: false,
+};
+
+const PAGINATION_DEFAULT_VALUES = {
+  page: 1,
+  perPage: 15,
+  totalRows: 0,
+  totalPages: 0,
+};
+
 function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totalTransactions, setTotalTransactions] = useState<TotalTransactions>(
-    {
-      revenue: 0,
-      expense: 0,
-      total: 0,
-    }
+    TOTAL_TRANSACTIONS_DEFAULT_VALUES
   );
-  const [loadings, setLoadings] = useState<Loadings>({
-    initial: false,
-    refresh: false,
-    loadMore: false,
-  });
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    perPage: 15,
-    totalRows: 0,
-    totalPages: 0,
-  });
+  const [loadings, setLoadings] = useState<Loadings>(LOADINGS_DEFAULT_VALUES);
+  const [pagination, setPagination] = useState<Pagination>(
+    PAGINATION_DEFAULT_VALUES
+  );
+
+  const { user } = useAuthContext();
 
   function handleLoadings({ key, value }: HandleLoadingParams) {
     setLoadings((prevValue) => ({
@@ -159,6 +173,21 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     fetchTransactions({ page: pagination.page + 1 });
   }, [loadings.loadMore, pagination]);
 
+  function clearTransactionContext() {
+    setCategories([]);
+    setTransactions([]);
+    setTotalTransactions(TOTAL_TRANSACTIONS_DEFAULT_VALUES);
+    setPagination(PAGINATION_DEFAULT_VALUES);
+    setLoadings({
+      ...LOADINGS_DEFAULT_VALUES,
+      initial: true,
+    });
+  }
+
+  useEffect(() => {
+    clearTransactionContext();
+  }, [user?.id]);
+
   return (
     <TransactionContext.Provider
       value={{
@@ -173,6 +202,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         handleLoadings,
         refreshTransactions,
         loadMoreTransactions,
+        clearTransactionContext,
       }}
     >
       {children}

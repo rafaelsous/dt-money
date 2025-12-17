@@ -25,38 +25,20 @@ export function Home() {
 
   async function handleFetchCategories() {
     try {
-      handleLoadings({
-        key: "initial",
-        value: true,
-      });
       await fetchCategories();
     } catch (error) {
       handleError(
         error,
         "Não foi possível carregar as categorias de transação."
       );
-    } finally {
-      handleLoadings({
-        key: "initial",
-        value: false,
-      });
     }
   }
 
   async function handleIntialFetchTransactions() {
     try {
-      handleLoadings({
-        key: "initial",
-        value: true,
-      });
       await fetchTransactions({ page: 1 });
     } catch (error) {
       handleError(error, "Não foi possível carregar as transações.");
-    } finally {
-      handleLoadings({
-        key: "initial",
-        value: false,
-      });
     }
   }
 
@@ -96,10 +78,17 @@ export function Home() {
 
   useEffect(() => {
     (async () => {
+      console.log(transactions);
+
       await Promise.all([
         handleFetchCategories(),
         handleIntialFetchTransactions(),
       ]);
+
+      handleLoadings({
+        key: "initial",
+        value: false,
+      });
     })();
   }, []);
 
@@ -108,7 +97,7 @@ export function Home() {
       <FlatList
         className="bg-background-secondary"
         keyExtractor={(item) => `transaction-${item.id}`}
-        data={transactions}
+        data={loadings.initial ? [] : transactions}
         renderItem={({ item: transaction }) => (
           <TransactionCard transaction={transaction} />
         )}
@@ -130,6 +119,7 @@ export function Home() {
             onRefresh={handleRefreshTransactions}
           />
         }
+        showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
   );
