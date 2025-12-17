@@ -64,7 +64,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   const [isLoading, setIsLoading] = useState(false);
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    perPage: 10,
+    perPage: 15,
     totalRows: 0,
     totalPages: 0,
   });
@@ -86,7 +86,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     await refreshTransactions();
   }
 
-  async function refreshTransactions() {
+  const refreshTransactions = useCallback(async () => {
     const { page, perPage } = pagination;
 
     setIsLoading(true);
@@ -104,7 +104,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
       totalPages: transactionResponse.totalPages,
     });
     setIsLoading(false);
-  }
+  }, [pagination]);
 
   const fetchTransactions = useCallback(
     async ({ page = 1 }: FetchTransactionsParams) => {

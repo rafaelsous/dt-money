@@ -26,8 +26,32 @@ export function Home() {
     } catch (error) {
       handleError(
         error,
-        "Não foi possível carregar as categorias de transações."
+        "Não foi possível carregar as categorias de transação."
       );
+    }
+  }
+
+  async function handleIntialFetchTransactions() {
+    try {
+      await fetchTransactions({ page: 1 });
+    } catch (error) {
+      handleError(error, "Não foi possível carregar as transações.");
+    }
+  }
+
+  async function handleLoadMoreTransactions() {
+    try {
+      await loadMoreTransactions();
+    } catch (error) {
+      handleError(error, "Não foi possível carregar mais transações.");
+    }
+  }
+
+  async function handleRefreshTransactions() {
+    try {
+      await refreshTransactions();
+    } catch (error) {
+      handleError(error, "Não foi possível atualizar as transações.");
     }
   }
 
@@ -35,7 +59,7 @@ export function Home() {
     (async () => {
       await Promise.all([
         handleFetchCategories(),
-        fetchTransactions({ page: 1 }),
+        handleIntialFetchTransactions(),
       ]);
     })();
   }, []);
@@ -50,12 +74,12 @@ export function Home() {
           <TransactionCard transaction={transaction} />
         )}
         ListHeaderComponent={ListHeader}
-        onEndReached={loadMoreTransactions}
+        onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
-            onRefresh={refreshTransactions}
+            onRefresh={handleRefreshTransactions}
           />
         }
       />
