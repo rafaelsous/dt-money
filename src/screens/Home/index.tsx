@@ -8,6 +8,7 @@ import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
 
 import { ListHeader } from "@/components/ListHeader";
 import { TransactionCard } from "@/components/TransactionCard";
+import { EmptyList } from "@/components/EmptyList";
 
 export function Home() {
   const {
@@ -110,6 +111,7 @@ export function Home() {
         renderItem={({ item: transaction }) => (
           <TransactionCard transaction={transaction} />
         )}
+        ListEmptyComponent={loadings.initial ? null : EmptyList}
         ListHeaderComponent={ListHeader}
         onEndReached={handleLoadMoreTransactions}
         onEndReachedThreshold={0.5}
