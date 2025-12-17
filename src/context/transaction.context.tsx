@@ -31,6 +31,8 @@ export type TransactionContextType = {
   categories: TransactionCategory[];
   transactions: Transaction[];
   totalTransactions: TotalTransactions;
+  isLoading: boolean;
+  refreshTransactions: () => Promise<void>;
 };
 
 const TransactionContext = createContext<TransactionContextType>(
@@ -47,6 +49,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
       total: 0,
     }
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   async function fetchCategories() {
     const response = await getTransactionCategories();
@@ -57,6 +60,25 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   async function createTransaction(transaction: CreateTransactionDTO) {
     await addTransaction(transaction);
     await fetchCategories();
+    await refreshTransactions();
+  }
+
+  async function updateTransaction(transaction: UpdateTransactionDTO) {
+    await changeTransaction(transaction);
+    await refreshTransactions();
+  }
+
+  async function refreshTransactions() {
+    console.log("Refreshing transactions...");
+    setIsLoading(true);
+    const transationResponse = await getTransactions({
+      page: 1,
+      perPage: 10,
+    });
+
+    setTransactions(transationResponse.data);
+    setTotalTransactions(transationResponse.totalTransactions);
+    setIsLoading(false);
   }
 
   const fetchTransactions = useCallback(async () => {
@@ -79,15 +101,13 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         categories,
         transactions,
         totalTransactions,
+        isLoading,
+        refreshTransactions,
       }}
     >
       {children}
     </TransactionContext.Provider>
   );
-}
-
-async function updateTransaction(transaction: UpdateTransactionDTO) {
-  await changeTransaction(transaction);
 }
 
 function useTransactionContext() {
