@@ -55,6 +55,8 @@ export type TransactionContextType = {
   refreshTransactions: () => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
   clearTransactionContext: () => void;
+  setSearchText: (text: string) => void;
+  searchText: string;
 };
 
 export type Pagination = {
@@ -90,6 +92,7 @@ const PAGINATION_DEFAULT_VALUES = {
 function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [searchText, setSearchText] = useState("");
   const [totalTransactions, setTotalTransactions] = useState<TotalTransactions>(
     TOTAL_TRANSACTIONS_DEFAULT_VALUES
   );
@@ -146,6 +149,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
       const transactionResponse = await getTransactions({
         page,
         perPage: pagination.perPage,
+        searchText,
       });
 
       if (page === 1) {
@@ -165,7 +169,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         totalPages: transactionResponse.totalPages,
       });
     },
-    [pagination]
+    [pagination, searchText]
   );
 
   const loadMoreTransactions = useCallback(async () => {
@@ -201,10 +205,12 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         totalTransactions,
         loadings,
         pagination,
+        searchText,
         handleLoadings,
         refreshTransactions,
         loadMoreTransactions,
         clearTransactionContext,
+        setSearchText,
       }}
     >
       {children}

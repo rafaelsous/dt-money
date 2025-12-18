@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { FunnelSimpleIcon } from "phosphor-react-native";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -7,8 +8,27 @@ import { useTransactionContext } from "@/context/transaction.context";
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
 export function FilterInput() {
-  const { pagination } = useTransactionContext();
+  const [text, setText] = useState("");
+
+  const { pagination, searchText, setSearchText, fetchTransactions } =
+    useTransactionContext();
   const { openBottomSheet } = useBottomSheetContext();
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchText(text);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [text]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await fetchTransactions({ page: 1 });
+      } catch (error) {}
+    })();
+  }, [searchText]);
 
   return (
     <View className="w-[90%] self-center">
@@ -24,6 +44,8 @@ export function FilterInput() {
           className="flex-1 h-[50] text-lg text-white"
           placeholder="Busque uma transação"
           placeholderTextColor={colors.gray[700]}
+          value={text}
+          onChangeText={setText}
         />
 
         <TouchableOpacity
