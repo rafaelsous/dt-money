@@ -41,22 +41,30 @@ type HandleLoadingParams = {
   value: boolean;
 };
 
+type HandleFilterParams = {
+  key: keyof Filters;
+  value: Date | boolean | number;
+};
+
 export type TransactionContextType = {
-  fetchCategories: () => Promise<void>;
-  createTransaction: (transaction: CreateTransactionDTO) => Promise<void>;
-  fetchTransactions: (params: FetchTransactionsParams) => Promise<void>;
-  updateTransaction: (transaction: UpdateTransactionDTO) => Promise<void>;
   categories: TransactionCategory[];
   transactions: Transaction[];
   totalTransactions: TotalTransactions;
   loadings: Loadings;
   pagination: Pagination;
+  searchText: string;
+  filters: Filters;
+  fetchCategories: () => Promise<void>;
+  createTransaction: (transaction: CreateTransactionDTO) => Promise<void>;
+  fetchTransactions: (params: FetchTransactionsParams) => Promise<void>;
+  updateTransaction: (transaction: UpdateTransactionDTO) => Promise<void>;
   handleLoadings: (params: HandleLoadingParams) => void;
   refreshTransactions: () => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
   clearTransactionContext: () => void;
   setSearchText: (text: string) => void;
-  searchText: string;
+  handleFilters: (params: HandleFilterParams) => void;
+  resetFilters: () => void;
 };
 
 export type Pagination = {
@@ -64,6 +72,13 @@ export type Pagination = {
   perPage: number;
   totalRows?: number;
   totalPages: number;
+};
+
+export type Filters = {
+  from?: Date;
+  to?: Date;
+  typeId?: number;
+  categoryIds: Record<number, boolean>;
 };
 
 const TransactionContext = createContext<TransactionContextType>(
@@ -89,10 +104,18 @@ const PAGINATION_DEFAULT_VALUES = {
   totalPages: 0,
 };
 
+const FILTERS_DEFAULT_VALUES = {
+  from: undefined,
+  to: undefined,
+  typeId: undefined,
+  categoryIds: {},
+};
+
 function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [filters, setFilters] = useState<Filters>(FILTERS_DEFAULT_VALUES);
   const [totalTransactions, setTotalTransactions] = useState<TotalTransactions>(
     TOTAL_TRANSACTIONS_DEFAULT_VALUES
   );
@@ -189,6 +212,17 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     });
   }
 
+  function handleFilters({ key, value }: HandleFilterParams) {
+    setFilters((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  }
+
+  function resetFilters() {
+    setFilters(FILTERS_DEFAULT_VALUES);
+  }
+
   useEffect(() => {
     clearTransactionContext();
   }, [user?.id]);
@@ -196,21 +230,24 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   return (
     <TransactionContext.Provider
       value={{
-        fetchCategories,
-        createTransaction,
-        fetchTransactions,
-        updateTransaction,
         categories,
         transactions,
         totalTransactions,
         loadings,
         pagination,
         searchText,
+        filters,
+        fetchCategories,
+        createTransaction,
+        fetchTransactions,
+        updateTransaction,
         handleLoadings,
         refreshTransactions,
         loadMoreTransactions,
         clearTransactionContext,
         setSearchText,
+        handleFilters,
+        resetFilters,
       }}
     >
       {children}

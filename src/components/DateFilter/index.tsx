@@ -6,16 +6,26 @@ import DateTimePicker, {
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { formatDateTime } from "@/utils/formatDateTime";
+import { useTransactionContext } from "@/context/transaction.context";
 
 export function DateFilter() {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+
+  const { filters, handleFilters } = useTransactionContext();
 
   function handleSelectStartDate(
     event: DateTimePickerEvent,
     selectedDate?: Date
   ) {
     setShowStartDatePicker(false);
+
+    if (event.type === "set" && selectedDate) {
+      handleFilters({
+        key: "from",
+        value: selectedDate,
+      });
+    }
   }
 
   function handleSelectEndDate(
@@ -23,6 +33,13 @@ export function DateFilter() {
     selectedDate?: Date
   ) {
     setShowEndDatePicker(false);
+
+    if (event.type === "set" && selectedDate) {
+      handleFilters({
+        key: "to",
+        value: selectedDate,
+      });
+    }
   }
 
   return (
@@ -40,10 +57,12 @@ export function DateFilter() {
               <Text
                 className={clsx(
                   "text-lg",
-                  1 === 1 ? "text-white" : "text-gray-700"
+                  filters.from ? "text-white" : "text-gray-700"
                 )}
               >
-                {1 === 1 ? formatDateTime(new Date(), "DD/MM/YYYY") : "De"}
+                {filters.from
+                  ? formatDateTime(filters.from, "DD/MM/YYYY")
+                  : "De"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -57,10 +76,10 @@ export function DateFilter() {
               <Text
                 className={clsx(
                   "text-lg",
-                  1 === 1 ? "text-white" : "text-gray-700"
+                  filters.to ? "text-white" : "text-gray-700"
                 )}
               >
-                {1 === 1 ? formatDateTime(new Date(), "DD/MM/YYYY") : "Até"}
+                {filters.to ? formatDateTime(filters.to, "DD/MM/YYYY") : "Até"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -71,7 +90,7 @@ export function DateFilter() {
             mode="date"
             locale="pt_BR"
             display="default"
-            value={new Date()}
+            value={filters.from ?? new Date()}
             onChange={handleSelectStartDate}
           />
         )}
@@ -81,7 +100,7 @@ export function DateFilter() {
             mode="date"
             locale="pt_BR"
             display="default"
-            value={new Date()}
+            value={filters.to ?? new Date()}
             onChange={handleSelectEndDate}
           />
         )}
