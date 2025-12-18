@@ -89,7 +89,7 @@ export function NewTransaction() {
           hitSlop={16}
           onPress={closeBottomSheet}
         >
-          <XIcon size={24} color={colors.gray[700]} />
+          <XIcon size={20} color={colors.gray[600]} />
         </TouchableOpacity>
       </View>
 

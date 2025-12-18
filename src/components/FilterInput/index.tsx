@@ -7,6 +7,8 @@ import { colors } from "@/shared/colors";
 import { useTransactionContext } from "@/context/transaction.context";
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
+import { TransactionFilters } from "../TransactionFilters";
+
 export function FilterInput() {
   const [text, setText] = useState("");
 
@@ -50,7 +52,8 @@ export function FilterInput() {
 
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => openBottomSheet(<></>, 1)}
+          hitSlop={16}
+          onPress={() => openBottomSheet(<TransactionFilters />, 1)}
         >
           <FunnelSimpleIcon size={24} color={colors["accent-brand-light"]} />
         </TouchableOpacity>
