@@ -20,6 +20,7 @@ export function Home() {
     loadMoreTransactions,
     loadings,
     handleLoadings,
+    pagination,
   } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
@@ -76,6 +77,17 @@ export function Home() {
     }
   }
 
+  function handleLoadMore() {
+    if (
+      loadings.initial ||
+      loadings.loadMore ||
+      pagination.page >= pagination.totalPages
+    )
+      return;
+
+    handleLoadMoreTransactions();
+  }
+
   useEffect(() => {
     (async () => {
       await Promise.all([
@@ -109,8 +121,8 @@ export function Home() {
             />
           ) : null
         }
-        onEndReached={handleLoadMoreTransactions}
-        onEndReachedThreshold={0.5}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
         refreshControl={
           <RefreshControl
             refreshing={loadings.refresh}

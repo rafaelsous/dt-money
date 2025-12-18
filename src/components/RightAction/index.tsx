@@ -4,11 +4,12 @@ import { TrashIcon } from "phosphor-react-native";
 
 import { colors } from "@/shared/colors";
 
-import { removeTransaction } from "@/shared/services/dt-money/transaction.service";
+import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
+
+import { useSnackbarContext } from "@/context/snackbar.context";
+import { useTransactionContext } from "@/context/transaction.context";
 
 import { DeleteModal } from "../DeleteModal";
-import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
-import { useSnackbarContext } from "@/context/snackbar.context";
 
 type Props = {
   transactionId: number;
@@ -16,17 +17,20 @@ type Props = {
 
 export function RightAction({ transactionId }: Readonly<Props>) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const { notify } = useSnackbarContext();
-
   const { handleError } = useErrorHandler();
+  const { deleteTransaction, loadings, handleLoadings } =
+    useTransactionContext();
 
   async function handleRemoveTransaction() {
     try {
-      setIsLoading(true);
+      handleLoadings({
+        key: "refresh",
+        value: true,
+      });
 
-      await removeTransaction(transactionId);
+      await deleteTransaction(transactionId);
 
       setModalVisible(false);
       notify({
@@ -36,7 +40,10 @@ export function RightAction({ transactionId }: Readonly<Props>) {
     } catch (error) {
       handleError(error, "Não foi possível excluir a transação.");
     } finally {
-      setIsLoading(false);
+      handleLoadings({
+        key: "refresh",
+        value: false,
+      });
     }
   }
 
@@ -54,7 +61,7 @@ export function RightAction({ transactionId }: Readonly<Props>) {
         visible={modalVisible}
         hideModal={() => setModalVisible(false)}
         handleRemoveTransaction={handleRemoveTransaction}
-        isLoading={isLoading}
+        isLoading={loadings.refresh}
       />
     </>
   );

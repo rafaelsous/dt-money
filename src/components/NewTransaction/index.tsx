@@ -2,21 +2,22 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { XIcon } from "phosphor-react-native";
 import CurrencyInput from "react-native-currency-input";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import { colors } from "@/shared/colors";
 
+import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
+
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
+import { useTransactionContext } from "@/context/transaction.context";
 
 import { schema } from "./schema";
 
 import { Button } from "../Button";
 import { SelectType } from "../SelectType";
-import { SelectCategoryModal } from "../SelectCategoryModal";
 import { ErrorMessage } from "../ErrorMessage";
-import { useTransactionContext } from "@/context/transaction.context";
-import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
+import { SelectCategoryModal } from "../SelectCategoryModal";
 
 export type CreateTransactionDTO = {
   typeId: number;
@@ -35,10 +36,10 @@ export function NewTransaction() {
     description: "",
   });
   const [validationErrors, setValidationErrors] = useState<ValidationError>();
-  const [isLoading, setIsLoading] = useState(false);
 
   const { closeBottomSheet } = useBottomSheetContext();
-  const { createTransaction } = useTransactionContext();
+  const { createTransaction, loadings, handleLoadings } =
+    useTransactionContext();
   const { handleError } = useErrorHandler();
 
   function setTransactionData(
@@ -53,7 +54,11 @@ export function NewTransaction() {
 
   async function handleNewTransaction() {
     try {
-      setIsLoading(true);
+      handleLoadings({
+        key: "refresh",
+        value: true,
+      });
+
       await schema.validate(transaction, {
         abortEarly: false,
       });
@@ -75,7 +80,10 @@ export function NewTransaction() {
         handleError(error, "Não foi possível cadastrar nova transação.");
       }
     } finally {
-      setIsLoading(false);
+      handleLoadings({
+        key: "refresh",
+        value: false,
+      });
     }
   }
 
@@ -139,8 +147,8 @@ export function NewTransaction() {
         )}
 
         <View className="mt-8">
-          <Button disabled={isLoading} onPress={handleNewTransaction}>
-            {isLoading ? (
+          <Button disabled={loadings.refresh} onPress={handleNewTransaction}>
+            {loadings.refresh ? (
               <ActivityIndicator color={colors.white} />
             ) : (
               "Cadastrar"

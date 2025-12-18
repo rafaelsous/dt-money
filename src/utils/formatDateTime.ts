@@ -1,7 +1,7 @@
 import dayjs from "@/lib/dayjs";
 
 export function formatDateTime(
-  value: Date | string,
+  value: Date | string = "",
   format: string = "DD/MM/YYYY HH:mm"
 ): string | null {
   if (!value?.toString().trim()) {

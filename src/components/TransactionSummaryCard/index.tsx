@@ -1,9 +1,13 @@
+import clsx from "clsx";
 import { Text, View } from "react-native";
 
-import { ICONS } from "@/strategies/icon-strategy";
 import { TransactionTypes } from "@/enums/TransactionTpes";
-import { CARD_DATA } from "@/strategies/card-data-strategy";
+
 import { useTransactionContext } from "@/context/transaction.context";
+
+import { ICONS } from "@/strategies/icon-strategy";
+import { CARD_DATA } from "@/strategies/card-data-strategy";
+
 import { formatDateTime } from "@/utils/formatDateTime";
 import { numberToCurrency } from "@/utils/numberToCurrency";
 
@@ -18,11 +22,42 @@ export function TransactionSummaryCard({ type, amount }: Readonly<Props>) {
   const iconData = ICONS[type];
   const cardData = CARD_DATA[type];
 
-  const { transactions } = useTransactionContext();
+  const { transactions, filters } = useTransactionContext();
 
   const lastTransaction = transactions.find(
     ({ type: transactionType }) => transactionType.id === type
   );
+
+  function renderDateInfo() {
+    if (type === "total") {
+      return (
+        <Text
+          className={clsx(
+            "text-base",
+            amount >= 0 ? "text-accent-brand-light" : "text-red-300"
+          )}
+        >
+          {filters.from && filters.to
+            ? `De ${formatDateTime(
+                filters.from,
+                "DD/MM/YYYY"
+              )} até ${formatDateTime(filters.to, "DD/MM/YYYY")}`
+            : "Todo o período"}
+        </Text>
+      );
+    } else {
+      return (
+        <Text className="text-gray-700">
+          {lastTransaction?.createdAt
+            ? `Última ${cardData.label.toLowerCase()} em ${formatDateTime(
+                lastTransaction.createdAt,
+                "D [de] MMMM"
+              )}`
+            : "Nenhuma transação encontrada"}
+        </Text>
+      );
+    }
+  }
 
   return (
     <View
@@ -40,16 +75,7 @@ export function TransactionSummaryCard({ type, amount }: Readonly<Props>) {
           {numberToCurrency(amount)}
         </Text>
 
-        {type !== "total" && (
-          <Text className="text-gray-700">
-            {lastTransaction?.createdAt
-              ? `Última ${cardData.label.toLowerCase()} em ${formatDateTime(
-                  lastTransaction.createdAt,
-                  "D [de] MMMM"
-                )}`
-              : "Nenhuma transação encontrada"}
-          </Text>
-        )}
+        {renderDateInfo()}
       </View>
     </View>
   );

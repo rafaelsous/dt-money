@@ -2,24 +2,25 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { XIcon } from "phosphor-react-native";
 import CurrencyInput from "react-native-currency-input";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import { colors } from "@/shared/colors";
 
+import { useSnackbarContext } from "@/context/snackbar.context";
 import { useBottomSheetContext } from "@/context/bottomsheet.context";
+import { useTransactionContext } from "@/context/transaction.context";
+
+import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
+import { Transaction } from "@/shared/services/dt-money/transaction.service";
 
 import { schema } from "./schema";
 
 import { Button } from "../Button";
 import { SelectType } from "../SelectType";
-import { SelectCategoryModal } from "../SelectCategoryModal";
 import { ErrorMessage } from "../ErrorMessage";
-import { useTransactionContext } from "@/context/transaction.context";
-import { useErrorHandler } from "@/shared/hooks/userErrorHandler";
-import { Transaction } from "@/shared/services/dt-money/transaction.service";
 import { CreateTransactionDTO } from "../NewTransaction";
-import { useSnackbarContext } from "@/context/snackbar.context";
+import { SelectCategoryModal } from "../SelectCategoryModal";
 
 export type UpdateTransactionDTO = {
   id: number;
@@ -46,10 +47,10 @@ export function EditTransaction({
     description: transactionToUpdate.description,
   });
   const [validationErrors, setValidationErrors] = useState<ValidationError>();
-  const [isLoading, setIsLoading] = useState(false);
 
   const { closeBottomSheet } = useBottomSheetContext();
-  const { updateTransaction } = useTransactionContext();
+  const { updateTransaction, loadings, handleLoadings } =
+    useTransactionContext();
   const { notify } = useSnackbarContext();
   const { handleError } = useErrorHandler();
 
@@ -65,7 +66,11 @@ export function EditTransaction({
 
   async function handleUpdateTransaction() {
     try {
-      setIsLoading(true);
+      handleLoadings({
+        key: "refresh",
+        value: true,
+      });
+
       await schema.validate(transaction, {
         abortEarly: false,
       });
@@ -91,7 +96,10 @@ export function EditTransaction({
         handleError(error, "Não foi possível cadastrar nova transação.");
       }
     } finally {
-      setIsLoading(false);
+      handleLoadings({
+        key: "refresh",
+        value: false,
+      });
     }
   }
 
@@ -155,8 +163,8 @@ export function EditTransaction({
         )}
 
         <View className="mt-8">
-          <Button disabled={isLoading} onPress={handleUpdateTransaction}>
-            {isLoading ? (
+          <Button disabled={loadings.initial} onPress={handleUpdateTransaction}>
+            {loadings.refresh ? (
               <ActivityIndicator color={colors.white} />
             ) : (
               "Atualizar"

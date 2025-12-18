@@ -14,9 +14,12 @@ import {
   changeTransaction,
   Transaction,
   TotalTransactions,
+  removeTransaction,
 } from "@/shared/services/dt-money/transaction.service";
 
 import { useAuthContext } from "./auth.context";
+
+import { uniqueById } from "@/utils/uniqueById";
 
 import { CreateTransactionDTO } from "@/components/NewTransaction";
 import { UpdateTransactionDTO } from "@/components/EditTransaction";
@@ -58,6 +61,7 @@ export type TransactionContextType = {
   createTransaction: (transaction: CreateTransactionDTO) => Promise<void>;
   fetchTransactions: (params: FetchTransactionsParams) => Promise<void>;
   updateTransaction: (transaction: UpdateTransactionDTO) => Promise<void>;
+  deleteTransaction: (transactionId: number) => Promise<void>;
   handleLoadings: (params: HandleLoadingParams) => void;
   refreshTransactions: () => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
@@ -99,7 +103,7 @@ const LOADINGS_DEFAULT_VALUES = {
 
 const PAGINATION_DEFAULT_VALUES = {
   page: 1,
-  perPage: 15,
+  perPage: 4,
   totalRows: 0,
   totalPages: 0,
 };
@@ -141,12 +145,16 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
 
   async function createTransaction(transaction: CreateTransactionDTO) {
     await addTransaction(transaction);
-    await fetchCategories();
     await refreshTransactions();
   }
 
   async function updateTransaction(transaction: UpdateTransactionDTO) {
     await changeTransaction(transaction);
+    await refreshTransactions();
+  }
+
+  async function deleteTransaction(transactionId: number) {
+    await removeTransaction(transactionId);
     await refreshTransactions();
   }
 
@@ -178,10 +186,9 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
       if (page === 1) {
         setTransactions(transactionResponse.data);
       } else {
-        setTransactions((prevState) => [
-          ...prevState,
-          ...transactionResponse.data,
-        ]);
+        setTransactions((prevState) =>
+          uniqueById([...prevState, ...transactionResponse.data])
+        );
       }
 
       setTotalTransactions(transactionResponse.totalTransactions);
@@ -241,6 +248,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         createTransaction,
         fetchTransactions,
         updateTransaction,
+        deleteTransaction,
         handleLoadings,
         refreshTransactions,
         loadMoreTransactions,

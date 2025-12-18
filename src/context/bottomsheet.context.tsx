@@ -10,7 +10,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 import { colors } from "@/shared/colors";
-import { useTransactionContext } from "./transaction.context";
 
 type BottomSheetContextType = {
   openBottomSheet: (content: React.ReactNode, index: number) => void;
@@ -32,8 +31,6 @@ function BottomSheetContextProvider({
   const insets = useSafeAreaInsets();
   const snapPoints = ["70%", "90%"];
 
-  const { resetFilters } = useTransactionContext();
-
   const openBottomSheet = useCallback(
     (newContent: React.ReactNode, index: number) => {
       setIndex(index);
@@ -52,7 +49,6 @@ function BottomSheetContextProvider({
     setIndex(-1);
     setContent(null);
     bottomSheetRef.current?.close();
-    resetFilters();
   }, []);
 
   const handleSheetChanges = useCallback((index: number) => {
