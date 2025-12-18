@@ -68,6 +68,7 @@ export type TransactionContextType = {
   clearTransactionContext: () => void;
   setSearchText: (text: string) => void;
   handleFilters: (params: HandleFilterParams) => void;
+  handleCategoryFilter: (categoryId: number) => void;
   resetFilters: () => void;
 };
 
@@ -226,6 +227,16 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     }));
   }
 
+  function handleCategoryFilter(categoryId: number) {
+    setFilters((prevState) => ({
+      ...prevState,
+      categoryIds: {
+        ...prevState.categoryIds,
+        [categoryId]: !prevState.categoryIds[categoryId],
+      },
+    }));
+  }
+
   function resetFilters() {
     setFilters(FILTERS_DEFAULT_VALUES);
   }
@@ -255,6 +266,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         clearTransactionContext,
         setSearchText,
         handleFilters,
+        handleCategoryFilter,
         resetFilters,
       }}
     >

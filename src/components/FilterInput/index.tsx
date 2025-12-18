@@ -53,7 +53,7 @@ export function FilterInput() {
         <TouchableOpacity
           activeOpacity={0.7}
           hitSlop={16}
-          onPress={() => openBottomSheet(<TransactionFilters />, 1)}
+          onPress={() => openBottomSheet(<TransactionFilters />, 0)}
         >
           <FunnelSimpleIcon size={24} color={colors["accent-brand-light"]} />
         </TouchableOpacity>
