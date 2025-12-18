@@ -50,6 +50,7 @@ export type TransactionContextType = {
   transactions: Transaction[];
   totalTransactions: TotalTransactions;
   loadings: Loadings;
+  pagination: Pagination;
   handleLoadings: (params: HandleLoadingParams) => void;
   refreshTransactions: () => Promise<void>;
   loadMoreTransactions: () => Promise<void>;
@@ -199,6 +200,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         transactions,
         totalTransactions,
         loadings,
+        pagination,
         handleLoadings,
         refreshTransactions,
         loadMoreTransactions,

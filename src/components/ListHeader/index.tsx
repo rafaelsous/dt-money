@@ -4,6 +4,7 @@ import { TransactionTypes } from "@/enums/TransactionTpes";
 
 import { useTransactionContext } from "@/context/transaction.context";
 
+import { FilterInput } from "../FilterInput";
 import { AppHeader } from "@/components/AppHeader";
 import { TransactionSummaryCard } from "../TransactionSummaryCard";
 
@@ -37,6 +38,8 @@ export const ListHeader = () => {
           />
         </ScrollView>
       </View>
+
+      <FilterInput />
     </>
   );
 };

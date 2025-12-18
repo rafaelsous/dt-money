@@ -78,8 +78,6 @@ export function Home() {
 
   useEffect(() => {
     (async () => {
-      console.log(transactions);
-
       await Promise.all([
         handleFetchCategories(),
         handleIntialFetchTransactions(),
