@@ -45,7 +45,7 @@ export function DateFilter() {
   return (
     <View className="gap-6">
       <View className="gap-6">
-        <Text className="text-base text-gray-700">Data</Text>
+        <Text className="text-base font-medium text-gray-700">Data</Text>
 
         <View className="flex-row items-center justify-between">
           <View className="w-[48%]">

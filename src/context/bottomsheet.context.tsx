@@ -5,14 +5,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { TouchableWithoutFeedback, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 
 import { colors } from "@/shared/colors";
 
 type BottomSheetContextType = {
-  openBottomSheet: (content: React.ReactNode, index: number) => void;
+  openBottomSheet: (content: React.ReactNode) => void;
   closeBottomSheet: () => void;
 };
 
@@ -24,37 +26,25 @@ function BottomSheetContextProvider({
   children,
 }: Readonly<React.PropsWithChildren>) {
   const [content, setContent] = useState<React.ReactNode | null>(null);
-  const [index, setIndex] = useState<number>(-1);
-  const [isOpen, setIsOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const insets = useSafeAreaInsets();
-  const snapPoints = ["70%", "90%"];
 
   const openBottomSheet = useCallback(
-    (newContent: React.ReactNode, index: number) => {
-      setIndex(index);
+    (newContent: React.ReactNode) => {
+      bottomSheetRef.current?.close();
       setContent(newContent);
-      setIsOpen(true);
 
       requestAnimationFrame(() => {
-        bottomSheetRef.current?.snapToIndex(index);
+        bottomSheetRef.current?.expand();
       });
     },
-    []
+    [content]
   );
 
   const closeBottomSheet = useCallback(() => {
-    setIsOpen(false);
-    setIndex(-1);
     setContent(null);
     bottomSheetRef.current?.close();
-  }, []);
-
-  const handleSheetChanges = useCallback((index: number) => {
-    if (index === -1) {
-      setIsOpen(false);
-    }
   }, []);
 
   return (
@@ -66,25 +56,26 @@ function BottomSheetContextProvider({
     >
       {children}
 
-      {isOpen && (
-        <TouchableWithoutFeedback onPress={closeBottomSheet}>
-          <View className="absolute inset-0 bg-black/70 z-1" />
-        </TouchableWithoutFeedback>
-      )}
-
       <BottomSheet
         ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        index={index}
-        style={{ zIndex: 2 }}
+        index={-1}
+        enableDynamicSizing
         enablePanDownToClose
-        onChange={handleSheetChanges}
         backgroundStyle={{
           backgroundColor: colors["background-secondary"],
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           elevation: 9,
         }}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            pressBehavior="close"
+            opacity={0.7}
+          />
+        )}
         keyboardBehavior="extend"
         keyboardBlurBehavior="restore"
         android_keyboardInputMode="adjustResize"

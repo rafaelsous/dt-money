@@ -9,8 +9,10 @@ export function CategoryFilter() {
   const { categories, filters, handleCategoryFilter } = useTransactionContext();
 
   return (
-    <View className="mb-5">
-      <Text className="mb-5 text-base text-gray-700">Categoria</Text>
+    <View>
+      <Text className="mb-5 text-base text-gray-700 font-medium">
+        Categoria
+      </Text>
 
       {categories.map(({ id, name }) => (
         <TouchableOpacity

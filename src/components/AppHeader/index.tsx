@@ -33,7 +33,7 @@ export function AppHeader() {
       <Button
         style={{ width: 150, height: 50 }}
         onPress={() => {
-          openBottomSheet(<NewTransaction />, 0);
+          openBottomSheet(<NewTransaction />);
         }}
       >
         <Text className="font-bold text-sm">Nova transação</Text>

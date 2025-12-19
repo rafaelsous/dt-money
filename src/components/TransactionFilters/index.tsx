@@ -7,6 +7,7 @@ import { useBottomSheetContext } from "@/context/bottomsheet.context";
 
 import { DateFilter } from "../DateFilter";
 import { CategoryFilter } from "../CategoryFilter";
+import { TypeFilter } from "../TypeFilter";
 
 export function TransactionFilters() {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -28,6 +29,8 @@ export function TransactionFilters() {
       <DateFilter />
 
       <CategoryFilter />
+
+      <TypeFilter />
     </View>
   );
 }
