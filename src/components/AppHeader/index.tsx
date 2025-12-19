@@ -31,7 +31,8 @@ export function AppHeader() {
       </View>
 
       <Button
-        style={{ width: 150, height: 50 }}
+        widthFull={false}
+        className="w-[150] h-[50]"
         onPress={() => {
           openBottomSheet(<NewTransaction />);
         }}

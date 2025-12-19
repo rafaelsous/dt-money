@@ -9,12 +9,15 @@ type Props = TouchableOpacityProps &
   PropsWithChildren & {
     mode?: "fill" | "outline";
     icon?: ComponentType<IconProps>;
+    widthFull?: boolean;
   };
 
 export function Button({
   mode = "fill",
   icon: Icon,
   children,
+  className,
+  widthFull = true,
   ...rest
 }: Props) {
   const isFill = mode === "fill";
@@ -22,7 +25,9 @@ export function Button({
   return (
     <TouchableOpacity
       className={clsx(
-        "w-full h-button px-5 flex-row items-center bg-accent-brand rounded-xl",
+        widthFull && "w-full",
+        className,
+        "h-button px-5 flex-row items-center bg-accent-brand rounded-xl",
         Icon ? "justify-between" : "justify-center",
         isFill ? "bg-accent-brand" : "bg-transparent border border-accent-brand"
       )}

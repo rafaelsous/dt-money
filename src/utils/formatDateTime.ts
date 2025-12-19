@@ -1,4 +1,4 @@
-import dayjs from "@/lib/dayjs";
+import { dayjs } from "@/lib/dayjs";
 
 export function formatDateTime(
   value: Date | string = "",

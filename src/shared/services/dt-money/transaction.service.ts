@@ -1,5 +1,7 @@
 import qs from "qs";
 
+import { dayjs } from "@/lib/dayjs";
+
 import { dtMoneyApi } from "@/api/dt-money";
 
 import { CreateTransactionDTO } from "@/components/NewTransaction";
@@ -9,10 +11,10 @@ import { UpdateTransactionDTO } from "@/components/EditTransaction";
 export type GetTransactionParams = {
   page: number;
   perPage: number;
-  from?: number;
-  to?: number;
+  from?: Date;
+  to?: Date;
   typeId?: number;
-  categoryId?: number;
+  categoryIds?: number[];
   searchText?: string;
 };
 
@@ -67,6 +69,17 @@ export async function addTransaction(transaction: CreateTransactionDTO) {
 export async function getTransactions(
   params: GetTransactionParams
 ): Promise<GetTransactionResponse> {
+  const { from, to } = params;
+
+  const truncatedFrom = dayjs(from).toDate();
+  const truncatedTo = dayjs(to).toDate();
+
+  params = {
+    ...params,
+    from: truncatedFrom,
+    to: truncatedTo,
+  };
+
   const { data } = await dtMoneyApi.get<GetTransactionResponse>(
     "/transaction",
     {

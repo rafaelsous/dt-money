@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -69,7 +70,7 @@ export type TransactionContextType = {
   setSearchText: (text: string) => void;
   handleFilters: (params: HandleFilterParams) => void;
   handleCategoryFilter: (categoryId: number) => void;
-  resetFilters: () => void;
+  resetFilters: () => Promise<void>;
 };
 
 export type Pagination = {
@@ -104,7 +105,7 @@ const LOADINGS_DEFAULT_VALUES = {
 
 const PAGINATION_DEFAULT_VALUES = {
   page: 1,
-  perPage: 4,
+  perPage: 15,
   totalRows: 0,
   totalPages: 0,
 };
@@ -130,6 +131,14 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
   );
 
   const { user } = useAuthContext();
+
+  const categoryIds = useMemo(
+    () =>
+      Object.entries(filters.categoryIds)
+        .filter(([key, value]) => value)
+        .map(([key]) => Number(key)),
+    [filters.categoryIds]
+  );
 
   function handleLoadings({ key, value }: HandleLoadingParams) {
     setLoadings((prevValue) => ({
@@ -164,6 +173,8 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     const transactionResponse = await getTransactions({
       page: 1,
       perPage: page * perPage,
+      ...filters,
+      categoryIds,
     });
 
     setTransactions(transactionResponse.data);
@@ -174,7 +185,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
       totalRows: transactionResponse.totalRows,
       totalPages: transactionResponse.totalPages,
     });
-  }, [pagination]);
+  }, [pagination, filters, categoryIds]);
 
   const fetchTransactions = useCallback(
     async ({ page = 1 }: FetchTransactionsParams) => {
@@ -182,6 +193,8 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         page,
         perPage: pagination.perPage,
         searchText,
+        ...filters,
+        categoryIds,
       });
 
       if (page === 1) {
@@ -200,7 +213,7 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
         totalPages: transactionResponse.totalPages,
       });
     },
-    [pagination, searchText]
+    [pagination, searchText, filters, categoryIds]
   );
 
   const loadMoreTransactions = useCallback(async () => {
@@ -237,9 +250,27 @@ function TransactionContextProvider({ children }: Readonly<PropsWithChildren>) {
     }));
   }
 
-  function resetFilters() {
+  const resetFilters = useCallback(async () => {
     setFilters(FILTERS_DEFAULT_VALUES);
-  }
+    setSearchText("");
+
+    const transactionResponse = await getTransactions({
+      page: 1,
+      perPage: pagination.perPage,
+      searchText: "",
+      ...filters,
+      categoryIds: [],
+    });
+
+    setTransactions(transactionResponse.data);
+    setTotalTransactions(transactionResponse.totalTransactions);
+    setPagination({
+      ...pagination,
+      page: 1,
+      totalRows: transactionResponse.totalRows,
+      totalPages: transactionResponse.totalPages,
+    });
+  }, []);
 
   useEffect(() => {
     clearTransactionContext();

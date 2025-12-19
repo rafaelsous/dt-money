@@ -4,14 +4,15 @@ import { CalendarBlankIcon, TagSimpleIcon } from "phosphor-react-native";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { colors } from "@/shared/colors";
-
-import { formatDateTime } from "@/utils/formatDateTime";
-import { TransactionTypes } from "@/enums/TransactionTpes";
-import { numberToCurrency } from "@/utils/numberToCurrency";
 import { Transaction } from "@/shared/services/dt-money/transaction.service";
 
-import { RightAction } from "../RightAction";
+import { TransactionTypes } from "@/enums/TransactionTpes";
+
+import { formatDateTime } from "@/utils/formatDateTime";
+import { numberToCurrency } from "@/utils/numberToCurrency";
+
 import { LeftAction } from "../LeftAction";
+import { RightAction } from "../RightAction";
 
 type Props = {
   transaction: Transaction;
@@ -39,7 +40,7 @@ export function TransactionCard({ transaction }: Readonly<Props>) {
         <Text className="text-base text-white">{transaction.description}</Text>
         <Text
           className={clsx(
-            "text-2xl font-bold",
+            "text-xl font-bold",
             isExpensiveTransaction
               ? "text-accent-red"
               : "text-accent-brand-light"

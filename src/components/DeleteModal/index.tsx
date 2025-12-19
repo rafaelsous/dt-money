@@ -9,6 +9,7 @@ import {
 import { WarningCircleIcon, XIcon } from "phosphor-react-native";
 
 import { colors } from "@/shared/colors";
+
 import { Button } from "../Button";
 
 type Props = {
@@ -60,7 +61,8 @@ export function DeleteModal({
 
                 <View className="w-full pt-6 flex-row items-center justify-end gap-4">
                   <Button
-                    style={{ width: "47%" }}
+                    widthFull={false}
+                    className="flex-1"
                     mode="outline"
                     onPress={hideModal}
                   >
@@ -68,10 +70,8 @@ export function DeleteModal({
                   </Button>
 
                   <Button
-                    style={{
-                      width: "47%",
-                      backgroundColor: colors["accent-red-background-primary"],
-                    }}
+                    widthFull={false}
+                    className="flex-1 bg-accent-red-background-primary"
                     onPress={handleRemoveTransaction}
                   >
                     {isLoading ? <ActivityIndicator /> : "Apagar"}
